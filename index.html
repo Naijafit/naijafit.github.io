@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAIJA FIT FREE | No Gym, No Wahala</title>
+<meta name="description" content="Free fitness app for Nigerians: 20+ workouts, weekly plans, XP & badges, calorie & BMI tools, meal diary, progress charts.">
+<meta name="theme-color" content="#08060d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Naija Fit">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{--bg:#08060d;}
+  html{scroll-behavior:smooth;}
+  body{background:radial-gradient(circle at 20% 0%, #1a0b2e 0%, #08060d 45%) fixed, var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;padding-bottom:76px;}
+  .brand-text{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand-btn{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);}
+  .glow{box-shadow:0 0 30px rgba(236,72,153,.35);}
+  .card-hover{transition:transform .2s ease, box-shadow .2s ease;}
+  .card-hover:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(#a855f7,#ec4899);border-radius:10px;}
+  .confetti{position:fixed;top:-10px;border-radius:2px;pointer-events:none;z-index:9999;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0.3;}}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .navbtn.active{color:#fff;}
+  .navbtn.active .navicon{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .chip{transition:all .15s ease;}
+  .chip.active{background:linear-gradient(90deg,#a855f7,#ec4899);color:#fff;border-color:transparent;}
+  .toast{animation:toastIn .3s ease, toastOut .4s ease 2.6s forwards;}
+  @keyframes toastIn{from{opacity:0;transform:translate(-50%,20px);}to{opacity:1;transform:translate(-50%,0);}}
+  @keyframes toastOut{to{opacity:0;transform:translate(-50%,-10px);}}
+  .heat-cell{width:100%;padding-bottom:100%;border-radius:3px;}
+
+  /* Liquid Glass (iOS 26 style) */
+  .glass-nav{
+    background:linear-gradient(180deg, rgba(40,28,58,.55), rgba(10,7,16,.75));
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 8px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .glass-icon{
+    position:relative;
+    width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:13px;
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.08);
+    overflow:hidden;
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1), background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  }
+  .glass-icon::before{
+    content:'';
+    position:absolute;top:0;left:0;right:0;height:55%;
+    background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0));
+    pointer-events:none;
+  }
+  .navbtn.active .glass-icon{
+    background:linear-gradient(135deg, rgba(168,85,247,.4), rgba(236,72,153,.4), rgba(249,115,22,.35));
+    border-color:rgba(255,255,255,.3);
+    box-shadow:0 4px 16px rgba(236,72,153,.4), inset 0 1px 1px rgba(255,255,255,.35);
+    transform:translateY(-3px) scale(1.08);
+  }
+  .glass-card{
+    background:linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    backdrop-filter:blur(16px) saturate(160%);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .glass-pill{
+    background:rgba(255,255,255,.06);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+    backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid rgba(255,255,255,.14);
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-[#08060d]/90 backdrop-blur border-b border-white/10 p-4 flex justify-between items-center">
+  <h1 class="font-black text-lg tracking-tight">NAIJA <span class="brand-text">FIT</span> FREE 🇳🇬</h1>
+  <div id="headerXP" class="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold"></div>
+</header>
+
+<main class="max-w-6xl mx-auto">
+
+<!-- ============ DASHBOARD ============ -->
+<section id="view-dashboard" class="view active p-4 md:p-6 space-y-5">
+  <div id="onboardCard" class="hidden bg-gradient-to-br from-purple-900/40 to-pink-900/20 border border-white/10 rounded-2xl p-5">
+    <h3 class="font-black text-xl mb-1">Welcome! Set up your profile 👋</h3>
+    <p class="text-zinc-400 text-sm mb-4">Takes 10 seconds — personalizes your whole experience.</p>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <input id="obName" placeholder="Your name" class="col-span-2 bg-black border border-zinc-700 rounded-lg px-3 py-2 focus:border-pink-500 outline-none">
+      <select id="obGoal" class="col-span-2 bg-black border border-zinc-700 rounded-lg px-3 py-2 focus:border-pink-500 outline-none">
+        <option value="lose">Goal: Lose Weight</option>
+        <option value="muscle">Goal: Build Muscle</option>
+        <option value="fit">Goal: Stay Fit</option>
+        <option value="endurance">Goal: Improve Endurance</option>
+      </select>
+    </div>
+    <div class="flex gap-2 mb-4 flex-wrap" id="avatarPicker"></div>
+    <button onclick="saveOnboarding()" class="w-full brand-btn text-white py-3 rounded-full font-black">LET'S GO</button>
+  </div>
+
+  <div id="greetingCard" class="hidden bg-gradient-to-br from-purple-900/40 via-pink-900/20 to-orange-900/10 border border-white/10 rounded-2xl p-5">
+    <div class="flex items-center gap-3">
+      <div id="greetAvatar" class="text-4xl"></div>
+      <div>
+        <div class="text-zinc-400 text-xs" id="greetGoal"></div>
+        <div class="font-black text-xl" id="greetName"></div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <div class="flex justify-between text-xs text-zinc-400 mb-1">
+        <span id="levelLabel">Level 1</span>
+        <span id="xpLabel">0 / 200 XP</span>
+      </div>
+      <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+        <div id="xpBar" class="h-full brand-btn" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">💪</span></div><div class="text-2xl font-black" id="dashCount">0</div><div class="text-[11px] text-zinc-400">Workouts</div></div>
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">⏱️</span></div><div class="text-2xl font-black" id="dashMinutes">0</div><div class="text-[11px] text-zinc-400">Minutes</div></div>
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">🔥</span></div><div class="text-2xl font-black" id="dashStreak">0</div><div class="text-[11px] text-zinc-400">Day Streak</div></div>
+  </div>
+
+  <div>
+    <h3 class="font-black text-lg mb-2">🔥 Today's Challenge</h3>
+    <div id="challengeCard" class="bg-gradient-to-br from-orange-600/30 to-pink-600/20 border border-white/10 rounded-2xl p-5"></div>
+  </div>
+
+  <div>
+    <h3 class="font-black text-lg mb-2">📅 Today's Plan</h3>
+    <div id="todayPlanCard" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
+  </div>
+
+  <div>
+    <h3 class="font-black text-lg mb-2">🏅 Recent Badges</h3>
+    <div id="dashBadges" class="flex gap-3 overflow-x-auto pb-2"></div>
+  </div>
+</section>
+
+<!-- ============ WORKOUTS ============ -->
+<section id="view-workouts" class="view p-4 md:p-6">
+  <h3 class="text-2xl md:text-3xl font-black mb-1">WORKOUT LIBRARY</h3>
+  <p class="text-zinc-500 mb-4 text-sm">Filter by muscle group, difficulty, duration — or build your own.</p>
+  <button onclick="openBuilder()" class="glass-card w-full rounded-2xl p-4 mb-4 flex items-center gap-3 text-left">
+    <span class="glass-icon flex-shrink-0" style="width:44px;height:44px;border-radius:15px;"><span class="text-xl">⭐</span></span>
+    <span class="flex-1"><span class="block font-black">Create your own workout</span><span class="block text-xs text-zinc-400">Pick exercises, set the order, add rests</span></span>
+    <span class="text-2xl text-zinc-400">+</span>
+  </button>
+
+  <div class="flex gap-2 overflow-x-auto pb-2 mb-3" id="categoryChips"></div>
+  <div class="flex gap-2 mb-5">
+    <select id="filterDifficulty" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
+      <option value="all">All Difficulties</option>
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+    </select>
+    <select id="filterDuration" class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
+      <option value="all">Any Duration</option>
+      <option value="short">Under 10 min</option>
+      <option value="mid">10–15 min</option>
+      <option value="long">15+ min</option>
+    </select>
+  </div>
+
+  <div id="workoutGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</section>
+
+<!-- ============ PLAN ============ -->
+<section id="view-plan" class="view p-4 md:p-6">
+  <h3 class="text-2xl md:text-3xl font-black mb-1">WEEKLY PLAN</h3>
+  <p class="text-zinc-500 mb-5 text-sm">Assign a workout (or rest) to each day. Shows on your dashboard.</p>
+  <div id="planGrid" class="space-y-3"></div>
+  <button onclick="savePlan()" class="mt-5 w-full brand-btn text-white py-3 rounded-full font-black">SAVE PLAN</button>
+</section>
+
+<!-- ============ NUTRITION ============ -->
+<section id="view-nutrition" class="view p-4 md:p-6 space-y-8">
+  <h3 class="text-2xl md:text-3xl font-black">NUTRITION</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+      <h4 class="font-bold text-lg mb-4">⚖️ BMI Calculator</h4>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div><label class="text-xs text-zinc-500">Height (cm)</label><input id="bmiHeight" type="number" placeholder="170" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
+        <div><label class="text-xs text-zinc-500">Weight (kg)</label><input id="bmiWeight" type="number" placeholder="70" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
+      </div>
+      <button onclick="calcBMI()" class="w-full brand-btn text-white py-2.5 rounded-full font-bold">CALCULATE BMI</button>
+      <div id="bmiResult" class="mt-4 hidden">
+        <div class="text-3xl font-black" id="bmiValue"></div>
+        <div class="text-sm font-bold mt-1" id="bmiCategory"></div>
+        <div class="w-full h-2 bg-zinc-800 rounded-full mt-3 overflow-hidden"><div id="bmiBar" class="h-full" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+      <h4 class="font-bold text-lg mb-4">🔥 Daily Calorie Calculator</h4>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div><label class="text-xs text-zinc-500">Age</label><input id="calAge" type="number" placeholder="25" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
+        <div><label class="text-xs text-zinc-500">Gender</label><select id="calGender" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"><option value="male">Male</option><option value="female">Female</option></select></div>
+        <div><label class="text-xs text-zinc-500">Height (cm)</label><input id="calHeight" type="number" placeholder="170" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
+        <div><label class="text-xs text-zinc-500">Weight (kg)</label><input id="calWeight" type="number" placeholder="70" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
+      </div>
+      <label class="text-xs text-zinc-500">Activity Level</label>
+      <select id="calActivity" class="w-full mt-1 mb-3 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none">
+        <option value="1.2">Sedentary</option><option value="1.375">Light (1-3d/wk)</option><option value="1.55" selected>Moderate (3-5d/wk)</option><option value="1.725">Active (6-7d/wk)</option><option value="1.9">Very Active</option>
+      </select>
+      <button onclick="calcCalories()" class="w-full brand-btn text-white py-2.5 rounded-full font-bold">CALCULATE CALORIES</button>
+      <div id="calResult" class="mt-4 hidden text-sm">
+        <div class="text-3xl font-black"><span id="calValue"></span> <span class="text-sm text-zinc-500 font-normal">kcal/day</span></div>
+        <div class="grid grid-cols-2 gap-2 mt-3">
+          <div class="bg-black rounded-lg p-2 border border-zinc-800"><div class="text-zinc-500 text-xs">Lose</div><div class="font-bold text-pink-400" id="calLose"></div></div>
+          <div class="bg-black rounded-lg p-2 border border-zinc-800"><div class="text-zinc-500 text-xs">Gain</div><div class="font-bold text-pink-400" id="calGain"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="flex justify-between items-center mb-3">
+      <h4 class="font-black text-lg">🍽️ Today's Meal Diary</h4>
+      <div class="text-right">
+        <div class="text-xs text-zinc-500">Target</div>
+        <input id="targetCalories" type="number" placeholder="2200" class="w-24 bg-black border border-zinc-700 rounded-lg px-2 py-1 text-right text-sm focus:border-pink-500 outline-none">
+      </div>
+    </div>
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="md:col-span-2">
+        <div class="flex justify-between text-xs text-zinc-400 mb-1"><span id="diaryConsumed">0 kcal consumed</span><span id="diaryTarget">/ 0 kcal</span></div>
+        <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden mb-4"><div id="diaryBar" class="h-full brand-btn" style="width:0%"></div></div>
+        <div id="diaryList" class="space-y-2 max-h-64 overflow-y-auto"></div>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div class="relative w-32 h-32 rounded-full" id="macroDonut"></div>
+        <div class="flex gap-3 mt-3 text-[11px]">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span>Protein</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-500"></span>Carbs</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span>Fat</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="flex justify-between items-center mb-2">
+      <h4 class="font-black text-lg">🇳🇬 Naija Food Database</h4>
+      <input id="foodSearch" placeholder="Search food..." class="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm w-40 focus:border-pink-500 outline-none">
+    </div>
+    <div class="overflow-x-auto rounded-2xl border border-zinc-800">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-zinc-900 text-pink-400 uppercase text-xs">
+          <tr><th class="p-3">Food</th><th class="p-3 hidden sm:table-cell">Serving</th><th class="p-3 text-right">Kcal</th><th class="p-3 text-right hidden sm:table-cell">P/C/F</th><th class="p-3"></th></tr>
+        </thead>
+        <tbody id="foodTableBody" class="divide-y divide-zinc-800"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROGRESS ============ -->
+<section id="view-progress" class="view p-4 md:p-6 space-y-8">
+  <h3 class="text-2xl md:text-3xl font-black">YOUR PROGRESS</h3>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <h4 class="font-bold mb-3">⚖️ Weight Log</h4>
+    <div class="flex gap-2 mb-4">
+      <input id="weightLogInput" type="number" placeholder="Weight (kg)" class="flex-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
+      <button onclick="addWeightLog()" class="brand-btn text-white px-4 rounded-lg font-bold text-sm">LOG</button>
+    </div>
+    <svg id="weightChart" viewBox="0 0 300 100" class="w-full h-28"></svg>
+  </div>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <h4 class="font-bold mb-3">📊 Minutes (Last 14 Days)</h4>
+    <div id="minutesChart" class="flex items-end gap-1 h-28"></div>
+  </div>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <h4 class="font-bold mb-3">🗓️ Activity Heatmap</h4>
+    <div id="heatmap" class="grid grid-flow-col grid-rows-7 gap-1"></div>
+  </div>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <h4 class="font-bold mb-3">🏅 All Badges</h4>
+    <div id="badgeGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-3"></div>
+  </div>
+
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+    <div class="flex justify-between items-center mb-3">
+      <h4 class="font-bold">🕒 Workout History</h4>
+      <button onclick="clearHistory()" class="text-xs text-zinc-500 underline hover:text-red-400">Clear</button>
+    </div>
+    <div id="historyList" class="space-y-2"></div>
+  </div>
+</section>
+
+<!-- ============ PROFILE ============ -->
+<section id="view-profile" class="view p-4 md:p-6 space-y-5">
+  <h3 class="text-2xl md:text-3xl font-black mb-4">PROFILE</h3>
+  <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
+    <div>
+      <label class="text-xs text-zinc-500">Name</label>
+      <input id="profName" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 focus:border-pink-500 outline-none">
+    </div>
+    <div>
+      <label class="text-xs text-zinc-500 block mb-2">Avatar</label>
+      <div class="flex gap-2 flex-wrap" id="profAvatarPicker"></div>
+    </div>
+    <div>
+      <label class="text-xs text-zinc-500">Goal</label>
+      <select id="profGoal" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 focus:border-pink-500 outline-none">
+        <option value="lose">Lose Weight</option>
+        <option value="muscle">Build Muscle</option>
+        <option value="fit">Stay Fit</option>
+        <option value="endurance">Improve Endurance</option>
+      </select>
+    </div>
+    <button onclick="saveProfile()" class="w-full brand-btn text-white py-3 rounded-full font-black">SAVE PROFILE</button>
+  </div>
+  <div id="installCard" class="glass-card rounded-2xl p-5">
+    <div class="flex items-center gap-3">
+      <span class="glass-icon flex-shrink-0" style="width:44px;height:44px;border-radius:15px;"><span class="text-xl">📲</span></span>
+      <div class="flex-1">
+        <div class="font-black">Install the app</div>
+        <p id="installText" class="text-xs text-zinc-400 mt-0.5">Add it to your home screen from your browser menu for one-tap access and offline use.</p>
+      </div>
+    </div>
+    <button id="installBtn" onclick="installApp()" class="hidden mt-3 w-full brand-btn text-white py-2.5 rounded-full font-black text-sm">INSTALL</button>
+  </div>
+  <button onclick="resetAllData()" class="w-full bg-zinc-900 border border-red-900 text-red-400 py-3 rounded-full font-bold text-sm">Reset All Data</button>
+  <p class="text-center text-zinc-600 text-xs pt-4">Free forever. Built for Nigerians. 🇳🇬</p>
+</section>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<div class="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-3 pt-2 px-3 pointer-events-none">
+  <nav class="glass-nav pointer-events-auto flex justify-around gap-1 px-2 py-2 rounded-[28px] w-full max-w-md">
+    <button data-view="dashboard" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">🏠</span></span>Home</button>
+    <button data-view="workouts" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">💪</span></span>Workouts</button>
+    <button data-view="plan" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">🗓️</span></span>Plan</button>
+    <button data-view="nutrition" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">🍽️</span></span>Food</button>
+    <button data-view="progress" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">📊</span></span>Progress</button>
+    <button data-view="profile" class="navbtn flex flex-col items-center gap-1 text-[9px] font-bold text-zinc-400 px-1 py-1"><span class="glass-icon"><span class="navicon text-lg">👤</span></span>Profile</button>
+  </nav>
+</div>
+
+<!-- WORKOUT BUILDER MODAL -->
+<div id="builderModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex flex-col">
+  <div class="max-w-lg w-full mx-auto flex flex-col h-full p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-black text-xl" id="builderTitle">Create workout</h3>
+      <button onclick="closeBuilder()" class="text-zinc-400 hover:text-white text-3xl leading-none" aria-label="Close">&times;</button>
+    </div>
+    <input id="builderName" maxlength="40" placeholder="Workout name (e.g. Sunday Burner)" class="bg-black border border-zinc-700 rounded-lg px-3 py-2 mb-3 focus:border-pink-500 outline-none">
+
+    <div class="text-xs font-bold text-zinc-400 mb-1">YOUR WORKOUT <span id="builderSummary" class="text-zinc-500 font-normal"></span></div>
+    <div id="builderSelected" class="glass-card rounded-2xl p-2 mb-3 overflow-y-auto" style="max-height:32vh;min-height:64px;"></div>
+
+    <div class="flex gap-2 mb-2">
+      <input id="builderSearch" placeholder="Search exercises..." class="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
+      <button onclick="builderAdd('Rest')" class="glass-pill rounded-lg px-3 text-sm font-bold whitespace-nowrap">+ 😴 Rest</button>
+    </div>
+    <div id="builderList" class="flex-1 overflow-y-auto rounded-2xl border border-zinc-800 divide-y divide-zinc-800 mb-3"></div>
+
+    <button onclick="saveBuilder()" class="brand-btn text-white py-3 rounded-full font-black">SAVE WORKOUT</button>
+  </div>
+</div>
+
+<!-- WORKOUT PLAYER MODAL -->
+<div id="playerModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6">
+  <button onclick="toggleVoice()" id="voiceToggleBtn" class="absolute top-6 left-6 text-2xl leading-none">🔊</button>
+  <button onclick="closePlayer()" class="absolute top-6 right-6 text-zinc-500 hover:text-white text-3xl leading-none">&times;</button>
+  <div class="w-full max-w-sm text-center">
+    <p id="playerWorkoutName" class="brand-text font-black tracking-widest text-xs uppercase mb-2"></p>
+    <div id="exerciseIcon" class="relative w-full aspect-square max-w-[260px] mx-auto mb-3 bg-white/5 border border-white/10 rounded-2xl overflow-hidden"></div>
+    <p id="playerPhase" class="text-sm text-zinc-500 mb-1"></p>
+    <h2 id="playerExercise" class="text-3xl font-black mb-2">Get Ready</h2>
+    <p id="playerInstructions" class="text-zinc-400 text-sm leading-snug mb-6 min-h-[2.5rem] px-2"></p>
+
+    <div class="relative w-48 h-48 mx-auto mb-6 flex items-center justify-center">
+      <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a855f7"/><stop offset="50%" stop-color="#ec4899"/><stop offset="100%" stop-color="#f97316"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#27272a" stroke-width="8"/>
+        <circle id="playerRing" cx="50" cy="50" r="45" fill="none" stroke="url(#ringGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/>
+      </svg>
+      <div class="absolute text-5xl font-black" id="playerTimer">30</div>
+    </div>
+
+    <div class="w-full h-2 bg-zinc-800 rounded-full mb-6 overflow-hidden"><div id="playerProgress" class="h-full brand-btn" style="width:0%"></div></div>
+    <p class="text-xs text-zinc-500 mb-6" id="playerStepCount"></p>
+
+    <div class="flex gap-3">
+      <button onclick="togglePause()" id="pauseBtn" class="flex-1 bg-zinc-800 text-white py-3 rounded-full font-bold">PAUSE</button>
+      <button onclick="skipStep()" class="flex-1 brand-btn text-white py-3 rounded-full font-bold">NEXT</button>
+    </div>
+  </div>
+</div>
+
+<!-- DONE MODAL -->
+<div id="doneModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6 text-center">
+  <div class="text-6xl mb-4">🎉</div>
+  <h2 class="text-3xl font-black mb-2">WORKOUT COMPLETE!</h2>
+  <p class="text-zinc-400 mb-2" id="doneSummary"></p>
+  <p class="brand-text font-black text-lg mb-8" id="doneXP"></p>
+  <button onclick="closeDone()" class="brand-btn text-white px-8 py-3 rounded-full font-bold">DONE</button>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const categories = {
+  chest:{label:'Chest', emoji:'🔥', grad:'from-orange-500 to-red-500'},
+  abs:{label:'Abs', emoji:'🧱', grad:'from-purple-500 to-pink-500'},
+  legs:{label:'Legs', emoji:'🦵', grad:'from-blue-500 to-cyan-400'},
+  fullbody:{label:'Full Body', emoji:'⚡', grad:'from-lime-400 to-green-500'},
+  arms:{label:'Arms', emoji:'💪', grad:'from-yellow-400 to-orange-500'},
+  cardio:{label:'Cardio', emoji:'🏃', grad:'from-pink-500 to-rose-500'},
+  back:{label:'Back', emoji:'🦾', grad:'from-indigo-500 to-blue-500'},
+  shoulders:{label:'Shoulders', emoji:'🏋️', grad:'from-teal-400 to-cyan-500'},
+  glutes:{label:'Glutes', emoji:'🍑', grad:'from-fuchsia-500 to-purple-600'},
+  mobility:{label:'Mobility', emoji:'🧘', grad:'from-emerald-400 to-teal-500'},
+  custom:{label:'My Workouts', emoji:'⭐', grad:'from-amber-300 to-yellow-500'}
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const baseWorkouts = [
+  {id:'chest1', name:'Chest Blast', cat:'chest', diff:'Beginner', mins:12, equip:'No Equipment', exercises:['Regular Pushups','Wide Pushups','Knee Pushups','Rest','Incline Pushups','Regular Pushups']},
+  {id:'chest2', name:'Push-Up Pyramid', cat:'chest', diff:'Advanced', mins:15, equip:'No Equipment', exercises:['Diamond Pushups','Wide Pushups','Regular Pushups','Rest','Decline Pushups','Diamond Pushups','Clap Pushups']},
+  {id:'abs1', name:'6-Pack Abs', cat:'abs', diff:'Beginner', mins:8, equip:'No Equipment', exercises:['Crunches','Leg Raises','Plank','Rest','Bicycle Crunches']},
+  {id:'abs2', name:'Core Crusher', cat:'abs', diff:'Intermediate', mins:12, equip:'No Equipment', exercises:['Plank','Russian Twists','Leg Raises','Rest','Mountain Climbers','V-Ups','Side Plank']},
+  {id:'abs3', name:'Obliques on Fire', cat:'abs', diff:'Intermediate', mins:10, equip:'No Equipment', exercises:['Side Plank (Left)','Side Plank (Right)','Russian Twists','Rest','Bicycle Crunches','Standing Oblique Crunch']},
+  {id:'legs1', name:'Leg Day - Squat Challenge', cat:'legs', diff:'Intermediate', mins:15, equip:'No Equipment', exercises:['Bodyweight Squats','Lunges','Wall Sit','Rest','Jump Squats','Calf Raises','Sumo Squats']},
+  {id:'legs2', name:'Jump Squat Inferno', cat:'legs', diff:'Advanced', mins:12, equip:'No Equipment', exercises:['Jump Squats','Lunges','Squat Pulses','Rest','Broad Jumps','Jump Squats']},
+  {id:'fullbody1', name:'Full Body Fat Burn', cat:'fullbody', diff:'Intermediate', mins:20, equip:'No Equipment', exercises:['Jumping Jacks','Burpees','Mountain Climbers','Rest','High Knees','Squat to Punch','Plank Jacks','Rest','Burpees']},
+  {id:'fullbody2', name:'Beginner Full Body', cat:'fullbody', diff:'Beginner', mins:10, equip:'No Equipment', exercises:['Jumping Jacks','Bodyweight Squats','Knee Pushups','Rest','High Knees','Plank']},
+  {id:'arms1', name:'Arm Toning', cat:'arms', diff:'Beginner', mins:10, equip:'Water Bottles', exercises:['Bottle Bicep Curls','Overhead Tricep Extension','Lateral Raises','Rest','Front Raises','Tricep Kickbacks']},
+  {id:'arms2', name:'Tricep Trouble', cat:'arms', diff:'Intermediate', mins:8, equip:'Water Bottles', exercises:['Tricep Kickbacks','Overhead Extension','Diamond Pushups','Rest','Close-Grip Pushups']},
+  {id:'cardio1', name:'Lagos Sweat - Cardio', cat:'cardio', diff:'Intermediate', mins:10, equip:'No Equipment', exercises:['High Knees','Jumping Jacks','Butt Kicks','Rest','Fast Feet','Skater Jumps']},
+  {id:'cardio2', name:'HIIT Inferno', cat:'cardio', diff:'Advanced', mins:15, equip:'No Equipment', exercises:['Burpees','High Knees','Jump Squats','Rest','Mountain Climbers','Skater Jumps','Burpees','Rest','Sprint in Place']},
+  {id:'back1', name:'Back & Posture Fix', cat:'back', diff:'Beginner', mins:8, equip:'No Equipment', exercises:['Superman Hold','Reverse Snow Angels','Cat-Cow Stretch','Rest','Superman Pulses']},
+  {id:'back2', name:'Superman Back Burn', cat:'back', diff:'Intermediate', mins:10, equip:'No Equipment', exercises:['Superman Hold','Superman Pulses','Glute Kickbacks','Rest','Reverse Snow Angels','Prone Y-Raise']},
+  {id:'shoulders1', name:'Shoulder Sculpt', cat:'shoulders', diff:'Beginner', mins:8, equip:'Water Bottles', exercises:['Lateral Raises','Front Raises','Overhead Press','Rest','Arm Circles']},
+  {id:'mobility1', name:'Morning Mobility Flow', cat:'mobility', diff:'Beginner', mins:6, equip:'No Equipment', exercises:['Cat-Cow Stretch','Hip Circles','Arm Circles','Rest','Torso Twists']},
+  {id:'mobility2', name:'Cool Down Stretch', cat:'mobility', diff:'Beginner', mins:5, equip:'No Equipment', exercises:['Hamstring Stretch','Quad Stretch','Shoulder Stretch','Child\'s Pose']},
+  {id:'glutes1', name:'Glute Bridge Burn', cat:'glutes', diff:'Beginner', mins:10, equip:'No Equipment', exercises:['Glute Bridges','Glute Kickbacks','Hip Raises','Rest','Glute Bridge Pulses']},
+  {id:'glutes2', name:'Glute & Ham Builder', cat:'glutes', diff:'Intermediate', mins:12, equip:'No Equipment', exercises:['Single-Leg Glute Bridge','Glute Kickbacks','Hip Raises','Rest','Sumo Squats','Glute Bridges']},
+  {id:'core3', name:'Crawl & Core Flow', cat:'abs', diff:'Intermediate', mins:10, equip:'No Equipment', exercises:['Inchworms','Spider Crawls','Mountain Climbers','Rest','Plank','Spider Crawls']},
+  {id:'legs3', name:'Step-Up Cardio', cat:'cardio', diff:'Beginner', mins:10, equip:'Sturdy Step/Box', exercises:['Step-Ups','Box Jumps','High Knees','Rest','Step-Ups','Jumping Jacks']},
+  {id:'arms3', name:'Triceps & Dips', cat:'arms', diff:'Intermediate', mins:10, equip:'Chair or Bench', exercises:['Bench Dips','Tricep Kickbacks','Diamond Pushups','Rest','Overhead Tricep Extension','Bench Dips']},
+];
+
+const naijaFoods = [
+  {food:'Jollof Rice', serving:'1 plate (300g)', cal:450, p:12, c:70, f:14},
+  {food:'Egusi Soup + Fufu', serving:'1 bowl + wrap', cal:650, p:25, c:60, f:35},
+  {food:'Indomie (cooked)', serving:'1 pack', cal:380, p:8, c:55, f:14},
+  {food:'Suya (Beef)', serving:'150g stick', cal:280, p:28, c:6, f:16},
+  {food:'Puff Puff', serving:'4 pieces', cal:300, p:5, c:45, f:11},
+  {food:'Moin Moin', serving:'1 wrap', cal:220, p:14, c:18, f:10},
+  {food:'Akara', serving:'4 balls', cal:290, p:12, c:22, f:17},
+  {food:'Pounded Yam + Egusi', serving:'1 plate', cal:700, p:22, c:80, f:30},
+  {food:'Fried Rice', serving:'1 plate', cal:500, p:14, c:68, f:18},
+  {food:'Amala + Ewedu + Gbegiri', serving:'1 plate', cal:550, p:20, c:75, f:16},
+  {food:'Rice & Stew', serving:'1 plate', cal:480, p:16, c:65, f:17},
+  {food:'Ewa Agoyin (Beans)', serving:'1 plate', cal:420, p:18, c:55, f:14},
+  {food:'Asaro (Yam Porridge)', serving:'1 plate', cal:400, p:8, c:60, f:14},
+  {food:'Dodo (Fried Plantain)', serving:'6 pieces', cal:250, p:2, c:40, f:10},
+  {food:'Chin Chin', serving:'1 cup', cal:380, p:6, c:48, f:18},
+  {food:'Meat Pie', serving:'1 piece', cal:320, p:8, c:32, f:17},
+  {food:'Shawarma', serving:'1 wrap', cal:550, p:28, c:50, f:26},
+  {food:'Peppered Chicken', serving:'1 serving', cal:350, p:32, c:6, f:22},
+  {food:'Catfish Pepper Soup', serving:'1 bowl', cal:300, p:30, c:8, f:16},
+  {food:'Ogbono Soup', serving:'1 bowl', cal:420, p:18, c:20, f:30},
+  {food:'Okro Soup', serving:'1 bowl', cal:280, p:16, c:18, f:16},
+  {food:'Zobo Drink', serving:'1 glass', cal:90, p:0, c:22, f:0},
+  {food:'Boli (Roasted Plantain)', serving:'1 piece', cal:200, p:2, c:48, f:0},
+  {food:'Garri + Soup (Eba)', serving:'1 plate', cal:500, p:10, c:85, f:12},
+  {food:'Groundnut', serving:'30g handful', cal:170, p:8, c:6, f:14},
+  {food:'Coconut Rice', serving:'1 plate', cal:480, p:10, c:68, f:18},
+];
+
+const badgeDefs = [
+  {id:'first_workout', name:'First Steps', emoji:'🥉', desc:'Complete your first workout', cond:s=>s.count>=1},
+  {id:'five_workouts', name:'Getting Serious', emoji:'🥈', desc:'Complete 5 workouts', cond:s=>s.count>=5},
+  {id:'twenty_workouts', name:'Fitness Fanatic', emoji:'🥇', desc:'Complete 20 workouts', cond:s=>s.count>=20},
+  {id:'week_streak', name:'Week Warrior', emoji:'🔥', desc:'7-day workout streak', cond:s=>s.streak>=7},
+  {id:'all_categories', name:'Well Rounded', emoji:'🌈', desc:'Try every muscle group', cond:s=>s.categoriesTried>=Object.keys(categories).filter(k=>k!=='custom').length},
+  {id:'early_bird', name:'Early Bird', emoji:'🌅', desc:'Finish a workout before 7am', cond:s=>s.earlyBird},
+  {id:'night_owl', name:'Night Owl', emoji:'🌙', desc:'Finish a workout after 9pm', cond:s=>s.nightOwl},
+  {id:'weight_logger', name:'Data Driven', emoji:'📊', desc:'Log your weight 5 times', cond:s=>s.weightLogs>=5},
+  {id:'meal_logger', name:'Food Tracker', emoji:'🍲', desc:'Log 10 meals', cond:s=>s.mealLogs>=10},
+  {id:'plan_master', name:'Plan Master', emoji:'🗓️', desc:'Build a full weekly plan', cond:s=>s.planComplete},
+];
+
+const avatars = ['💪','🏃','🥗','🔥','⚡','🦁','🐆','👑'];
+const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+/* ================= STORAGE HELPERS ================= */
+const LS = {
+  profile:'naijaFitProfile', history:'naijaFitHistory', xp:'naijaFitXP', badges:'naijaFitBadges',
+  weight:'naijaFitWeightLog', meals:'naijaFitMealLog', plan:'naijaFitPlan', target:'naijaFitTargetCalories',
+  voice:'naijaFitVoiceEnabled', custom:'naijaFitCustomWorkouts'
+};
+const load = (k, d) => { try{ const v = JSON.parse(localStorage.getItem(k)); return v===null||v===undefined ? d : v; }catch(e){ return d; } };
+const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+const todayStr = () => new Date().toISOString().slice(0,10);
+
+let workouts = baseWorkouts.slice();
+function refreshWorkouts(){
+  workouts = baseWorkouts.concat(load(LS.custom, []));
+}
+refreshWorkouts();
+
+/* ================= NAVIGATION ================= */
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  window.scrollTo({top:0});
+  if(name==='dashboard') renderDashboard();
+  if(name==='workouts') renderWorkoutGrid();
+  if(name==='plan') renderPlanGrid();
+  if(name==='nutrition') renderNutrition();
+  if(name==='progress') renderProgress();
+  if(name==='profile') renderProfileForm();
+}
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click', ()=>showView(b.dataset.view)));
+
+/* ================= PROFILE / ONBOARDING ================= */
+function renderAvatarPicker(container, selected, onPick){
+  container.innerHTML='';
+  avatars.forEach(a=>{
+    const btn = document.createElement('button');
+    btn.type='button';
+    btn.textContent = a;
+    btn.className = 'text-2xl w-12 h-12 rounded-xl border-2 flex items-center justify-center '+(a===selected?'border-pink-500 bg-white/10':'border-zinc-700');
+    btn.onclick = ()=>{ onPick(a); renderAvatarPicker(container, a, onPick); };
+    container.appendChild(btn);
+  });
+}
+let onboardAvatar = avatars[0];
+function initOnboarding(){
+  renderAvatarPicker(document.getElementById('avatarPicker'), onboardAvatar, a=>onboardAvatar=a);
+}
+function saveOnboarding(){
+  const name = document.getElementById('obName').value.trim() || 'Champ';
+  const goal = document.getElementById('obGoal').value;
+  save(LS.profile, {name, goal, avatar:onboardAvatar});
+  renderDashboard();
+}
+function renderProfileForm(){
+  const p = load(LS.profile, null);
+  document.getElementById('profName').value = p ? p.name : '';
+  document.getElementById('profGoal').value = p ? p.goal : 'fit';
+  let selAvatar = p ? p.avatar : avatars[0];
+  renderAvatarPicker(document.getElementById('profAvatarPicker'), selAvatar, a=>{selAvatar=a; window._profAvatar=a;});
+  window._profAvatar = selAvatar;
+}
+function saveProfile(){
+  const name = document.getElementById('profName').value.trim() || 'Champ';
+  const goal = document.getElementById('profGoal').value;
+  save(LS.profile, {name, goal, avatar:window._profAvatar || avatars[0]});
+  showToast('✅ Profile saved!');
+  renderDashboard();
+}
+function resetAllData(){
+  if(confirm('This will erase ALL your data (profile, history, badges, logs). Continue?')){
+    Object.values(LS).forEach(k=>localStorage.removeItem(k));
+    location.reload();
+  }
+}
+
+/* ================= XP / LEVEL / BADGES ================= */
+function levelInfo(xp){
+  const lvl = Math.floor(xp/200)+1;
+  const into = xp%200;
+  return {lvl, into, pct:(into/200)*100};
+}
+function addXP(amount){
+  const xp = load(LS.xp, 0) + amount;
+  save(LS.xp, xp);
+  return xp;
+}
+function computeStats(){
+  const history = load(LS.history, []);
+  const weightLog = load(LS.weight, []);
+  const mealLog = load(LS.meals, {});
+  const plan = load(LS.plan, null);
+  const mealCount = Object.values(mealLog).reduce((s,arr)=>s+arr.length,0);
+  const count = history.length;
+  const minutes = history.reduce((s,h)=>s+h.mins,0);
+  const dateSet = [...new Set(history.map(h=>h.date.slice(0,10)))].sort().reverse();
+  let streak=0, cursor=new Date();
+  for(let i=0;i<dateSet.length;i++){
+    const d = cursor.toISOString().slice(0,10);
+    if(dateSet[i]===d){ streak++; cursor.setDate(cursor.getDate()-1); }
+    else if(i===0){ break; } else break;
+  }
+  return {
+    count, minutes, streak,
+    categoriesTried: new Set(history.map(h=>h.cat).filter(c=>c!=='custom')).size,
+    earlyBird: history.some(h=>new Date(h.date).getHours()<7),
+    nightOwl: history.some(h=>new Date(h.date).getHours()>=21),
+    weightLogs: weightLog.length,
+    mealLogs: mealCount,
+    planComplete: !!plan && days.every(d=>plan[d]!==undefined)
+  };
+}
+function checkBadges(){
+  const stats = computeStats();
+  const earned = load(LS.badges, []);
+  let newOnes = [];
+  badgeDefs.forEach(b=>{
+    if(!earned.includes(b.id) && b.cond(stats)){ earned.push(b.id); newOnes.push(b); }
+  });
+  if(newOnes.length){ save(LS.badges, earned); newOnes.forEach(b=>showToast(`🏅 Badge Unlocked: ${b.name}`)); }
+  return newOnes;
+}
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast fixed bottom-24 left-1/2 z-[100] brand-btn text-white font-bold px-5 py-3 rounded-full shadow-lg text-sm';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  const p = load(LS.profile, null);
+  document.getElementById('onboardCard').classList.toggle('hidden', !!p);
+  document.getElementById('greetingCard').classList.toggle('hidden', !p);
+  if(!p){ initOnboarding(); } else {
+    document.getElementById('greetAvatar').textContent = p.avatar;
+    document.getElementById('greetName').textContent = `Welcome back, ${p.name}!`;
+    const goalLabels = {lose:'Goal: Lose Weight', muscle:'Goal: Build Muscle', fit:'Goal: Stay Fit', endurance:'Goal: Improve Endurance'};
+    document.getElementById('greetGoal').textContent = goalLabels[p.goal] || '';
+  }
+  const xp = load(LS.xp, 0);
+  const li = levelInfo(xp);
+  document.getElementById('levelLabel').textContent = `Level ${li.lvl}`;
+  document.getElementById('xpLabel').textContent = `${li.into} / 200 XP`;
+  document.getElementById('xpBar').style.width = li.pct+'%';
+  document.getElementById('headerXP').innerHTML = `<span>⭐ Lvl ${li.lvl}</span>`;
+
+  const stats = computeStats();
+  document.getElementById('dashCount').textContent = stats.count;
+  document.getElementById('dashMinutes').textContent = stats.minutes;
+  document.getElementById('dashStreak').textContent = stats.streak;
+
+  const dayIdx = new Date().getDate() + new Date().getMonth();
+  const challenge = baseWorkouts[dayIdx % baseWorkouts.length];
+  const cat = categories[challenge.cat];
+  document.getElementById('challengeCard').innerHTML = `
+    <div class="flex items-center gap-3">
+      <div class="glass-icon flex-shrink-0" style="width:52px;height:52px;border-radius:18px;"><span class="text-2xl">${cat.emoji}</span></div>
+      <div class="flex-1 min-w-0">
+        <div class="text-xs text-orange-300 font-bold uppercase mb-1">${cat.label} • ${challenge.diff}</div>
+        <div class="font-black text-xl truncate">${challenge.name}</div>
+        <div class="text-zinc-400 text-sm mt-1">${challenge.mins} mins • Bonus XP for completing today's pick!</div>
+      </div>
+      <button onclick="startWorkout('${challenge.id}')" class="brand-btn text-white px-5 py-2.5 rounded-full font-bold whitespace-nowrap flex-shrink-0">START</button>
+    </div>`;
+
+  const plan = load(LS.plan, null);
+  const todayName = days[new Date().getDay()];
+  const planCard = document.getElementById('todayPlanCard');
+  if(!plan){
+    planCard.innerHTML = `<p class="text-zinc-400 text-sm mb-3">You haven't built a weekly plan yet.</p><button onclick="showView('plan')" class="brand-btn text-white px-5 py-2 rounded-full font-bold text-sm">Build My Plan</button>`;
+  } else {
+    const wid = plan[todayName];
+    if(!wid || wid==='rest'){
+      planCard.innerHTML = `<p class="text-zinc-300 font-bold">😴 ${todayName}: Rest Day</p><p class="text-zinc-500 text-sm mt-1">Recover well — you've earned it.</p>`;
+    } else {
+      const w = workouts.find(x=>x.id===wid);
+      planCard.innerHTML = w ? `
+        <div class="flex items-center justify-between gap-3">
+          <div><p class="text-zinc-500 text-xs">${todayName}'s Plan</p><p class="font-black text-lg">${esc(w.name)}</p><p class="text-zinc-400 text-sm">${w.mins} mins</p></div>
+          <button onclick="startWorkout('${w.id}')" class="brand-btn text-white px-5 py-2.5 rounded-full font-bold">START</button>
+        </div>` : '';
+    }
+  }
+
+  const earned = load(LS.badges, []);
+  const badgeStrip = document.getElementById('dashBadges');
+  if(earned.length===0){
+    badgeStrip.innerHTML = `<p class="text-zinc-500 text-sm">Complete a workout to earn your first badge!</p>`;
+  } else {
+    badgeStrip.innerHTML = earned.slice(-6).reverse().map(id=>{
+      const b = badgeDefs.find(x=>x.id===id);
+      return `<div class="flex-shrink-0 w-20 glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:36px;height:36px;border-radius:12px;"><span class="text-lg">${b.emoji}</span></div><div class="text-[10px] text-zinc-400">${b.name}</div></div>`;
+    }).join('');
+  }
+}
+
+/* ================= WORKOUT GRID / FILTERS ================= */
+let activeCategory = 'all';
+function renderCategoryChips(){
+  const wrap = document.getElementById('categoryChips');
+  const all = [{key:'all', label:'All', emoji:'✨'}, ...Object.entries(categories).map(([key,c])=>({key, label:c.label, emoji:c.emoji}))];
+  wrap.innerHTML = all.map(c=>`<button class="chip flex-shrink-0 border border-zinc-700 rounded-full px-4 py-2 text-xs font-bold ${c.key===activeCategory?'active':''}" data-cat="${c.key}">${c.emoji} ${c.label}</button>`).join('');
+  wrap.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ activeCategory = btn.dataset.cat; renderCategoryChips(); renderWorkoutGrid(); }));
+}
+function renderWorkoutGrid(){
+  renderCategoryChips();
+  const diff = document.getElementById('filterDifficulty').value;
+  const dur = document.getElementById('filterDuration').value;
+  const list = workouts.filter(w=>{
+    if(activeCategory!=='all' && w.cat!==activeCategory) return false;
+    if(diff!=='all' && w.diff!==diff) return false;
+    if(dur==='short' && w.mins>=10) return false;
+    if(dur==='mid' && (w.mins<10 || w.mins>15)) return false;
+    if(dur==='long' && w.mins<=15) return false;
+    return true;
+  });
+  const grid = document.getElementById('workoutGrid');
+  if(list.length===0){
+    grid.innerHTML = activeCategory==='custom'
+      ? `<p class="text-zinc-500 col-span-full text-center py-10">You haven't created a workout yet. Tap “Create your own” above.</p>`
+      : `<p class="text-zinc-500 col-span-full text-center py-10">No workouts match your filters.</p>`;
+    return;
+  }
+  grid.innerHTML = list.map(w=>{
+    const c = categories[w.cat];
+    return `
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 card-hover">
+      <div class="flex justify-between items-start mb-2">
+        <div class="text-3xl">${c.emoji}</div>
+        <span class="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gradient-to-r ${c.grad} text-black">${w.diff}</span>
+      </div>
+      <h4 class="font-bold text-lg">${esc(w.name)}</h4>
+      <p class="text-zinc-500 text-sm mt-1">${w.equip} • ${w.mins} mins</p>
+      <div class="flex gap-2 mt-4">
+        <button data-id="${w.id}" class="startBtn flex-1 bg-white text-black py-2.5 rounded-full font-bold hover:opacity-90 transition">START</button>
+        ${w.cat==='custom' ? `<button data-id="${w.id}" class="editBtn glass-pill px-4 rounded-full text-sm" aria-label="Edit workout">✏️</button><button data-id="${w.id}" class="delBtn glass-pill px-4 rounded-full text-sm" aria-label="Delete workout">🗑️</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.startBtn').forEach(btn=>btn.addEventListener('click', ()=>startWorkout(btn.dataset.id)));
+  grid.querySelectorAll('.editBtn').forEach(btn=>btn.addEventListener('click', ()=>openBuilder(btn.dataset.id)));
+  grid.querySelectorAll('.delBtn').forEach(btn=>btn.addEventListener('click', ()=>deleteCustomWorkout(btn.dataset.id)));
+}
+document.getElementById('filterDifficulty').addEventListener('change', renderWorkoutGrid);
+document.getElementById('filterDuration').addEventListener('change', renderWorkoutGrid);
+
+/* ================= CUSTOM WORKOUT BUILDER ================= */
+const exerciseCatalog = [...new Set(baseWorkouts.flatMap(w=>w.exercises))].filter(e=>e!=='Rest').sort();
+const MAX_BUILDER_STEPS = 30;
+let builderExercises = [];
+let builderEditId = null;
+
+function builderMinutes(list){
+  const rests = list.filter(e=>e==='Rest').length;
+  const sec = (list.length-rests)*WORK_TIME + rests*REST_TIME;
+  return Math.max(1, Math.round(sec/60));
+}
+function openBuilder(id){
+  builderEditId = null;
+  builderExercises = [];
+  document.getElementById('builderName').value = '';
+  document.getElementById('builderTitle').textContent = 'Create workout';
+  if(id){
+    const w = load(LS.custom, []).find(x=>x.id===id);
+    if(w){
+      builderEditId = id;
+      builderExercises = w.exercises.slice();
+      document.getElementById('builderName').value = w.name;
+      document.getElementById('builderTitle').textContent = 'Edit workout';
+    }
+  }
+  document.getElementById('builderSearch').value = '';
+  document.getElementById('builderModal').classList.remove('hidden');
+  renderBuilder();
+}
+function closeBuilder(){ document.getElementById('builderModal').classList.add('hidden'); }
+function builderAdd(name){
+  if(builderExercises.length>=MAX_BUILDER_STEPS){ showToast('Max '+MAX_BUILDER_STEPS+' steps per workout'); return; }
+  builderExercises.push(name);
+  renderBuilderSelected();
+  const box = document.getElementById('builderSelected');
+  box.scrollTop = box.scrollHeight;
+}
+function renderBuilderSelected(){
+  const box = document.getElementById('builderSelected');
+  const n = builderExercises.length;
+  const work = builderExercises.filter(e=>e!=='Rest').length;
+  document.getElementById('builderSummary').textContent = n ? `• ${work} exercises • about ${builderMinutes(builderExercises)} min` : '';
+  if(!n){ box.innerHTML = '<p class="text-zinc-500 text-sm text-center py-4">Tap exercises below to add them.</p>'; return; }
+  box.innerHTML = builderExercises.map((e,i)=>`
+    <div class="flex items-center gap-2 px-2 py-1.5 rounded-lg ${e==='Rest'?'bg-white/5 text-zinc-400':''}">
+      <span class="w-5 text-xs text-zinc-500">${i+1}</span>
+      <span class="flex-1 text-sm font-semibold truncate">${e==='Rest'?'😴 Rest':esc(e)}</span>
+      <button data-act="up" data-i="${i}" class="px-2 text-zinc-400 disabled:opacity-20" ${i===0?'disabled':''} aria-label="Move up">▲</button>
+      <button data-act="down" data-i="${i}" class="px-2 text-zinc-400 disabled:opacity-20" ${i===n-1?'disabled':''} aria-label="Move down">▼</button>
+      <button data-act="del" data-i="${i}" class="px-2 text-red-400" aria-label="Remove">✕</button>
+    </div>`).join('');
+}
+function renderBuilderList(){
+  const q = document.getElementById('builderSearch').value.trim().toLowerCase();
+  const list = exerciseCatalog.filter(e=>e.toLowerCase().includes(q));
+  document.getElementById('builderList').innerHTML = list.length
+    ? list.map(e=>`<button data-add="${esc(e)}" class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm hover:bg-white/5"><span>${esc(e)}</span><span class="text-pink-400 font-bold">+</span></button>`).join('')
+    : '<p class="text-zinc-500 text-sm text-center py-6">No exercises found.</p>';
+}
+function renderBuilder(){ renderBuilderSelected(); renderBuilderList(); }
+document.getElementById('builderSearch').addEventListener('input', renderBuilderList);
+document.getElementById('builderList').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-add]');
+  if(btn) builderAdd(btn.dataset.add);
+});
+document.getElementById('builderSelected').addEventListener('click', e=>{
+  const btn = e.target.closest('[data-act]');
+  if(!btn) return;
+  const i = Number(btn.dataset.i);
+  if(btn.dataset.act==='del') builderExercises.splice(i,1);
+  if(btn.dataset.act==='up' && i>0) [builderExercises[i-1],builderExercises[i]] = [builderExercises[i],builderExercises[i-1]];
+  if(btn.dataset.act==='down' && i<builderExercises.length-1) [builderExercises[i+1],builderExercises[i]] = [builderExercises[i],builderExercises[i+1]];
+  renderBuilderSelected();
+});
+function saveBuilder(){
+  const name = document.getElementById('builderName').value.trim();
+  const steps = builderExercises.slice();
+  while(steps.length && steps[0]==='Rest') steps.shift();
+  while(steps.length && steps[steps.length-1]==='Rest') steps.pop();
+  if(!name){ showToast('Give your workout a name'); return; }
+  if(!steps.some(e=>e!=='Rest')){ showToast('Add at least one exercise'); return; }
+  const custom = load(LS.custom, []);
+  const workout = {id: builderEditId || 'custom_'+Date.now(), name, cat:'custom', diff:'Custom', mins:builderMinutes(steps), equip:'Your mix', exercises:steps};
+  const idx = custom.findIndex(w=>w.id===workout.id);
+  if(idx>=0) custom[idx] = workout; else custom.push(workout);
+  save(LS.custom, custom);
+  refreshWorkouts();
+  closeBuilder();
+  activeCategory = 'custom';
+  renderWorkoutGrid();
+  showToast('⭐ Workout saved!');
+}
+function deleteCustomWorkout(id){
+  const w = load(LS.custom, []).find(x=>x.id===id);
+  if(!w || !confirm('Delete "'+w.name+'"?')) return;
+  save(LS.custom, load(LS.custom, []).filter(x=>x.id!==id));
+  const plan = load(LS.plan, null);
+  if(plan){
+    Object.keys(plan).forEach(d=>{ if(plan[d]===id) plan[d]='rest'; });
+    save(LS.plan, plan);
+  }
+  refreshWorkouts();
+  renderWorkoutGrid();
+}
+
+/* ================= PLAN BUILDER ================= */
+function renderPlanGrid(){
+  const plan = load(LS.plan, {});
+  const grid = document.getElementById('planGrid');
+  grid.innerHTML = days.map(d=>{
+    const opts = ['<option value="rest">😴 Rest Day</option>']
+      .concat(Object.entries(categories).map(([key,c])=>{
+        const opts2 = workouts.filter(w=>w.cat===key).map(w=>`<option value="${w.id}" ${plan[d]===w.id?'selected':''}>${esc(w.name)} (${w.mins}m)</option>`).join('');
+        return `<optgroup label="${c.emoji} ${c.label}">${opts2}</optgroup>`;
+      }));
+    const restSelected = (!plan[d] || plan[d]==='rest') ? 'selected' : '';
+    return `
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-3 flex items-center gap-3">
+      <div class="w-12 font-black text-sm">${d}</div>
+      <select data-day="${d}" class="planSelect flex-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
+        <option value="rest" ${restSelected}>😴 Rest Day</option>
+        ${opts.slice(1).join('')}
+      </select>
+    </div>`;
+  }).join('');
+}
+function savePlan(){
+  const plan = {};
+  document.querySelectorAll('.planSelect').forEach(sel=>{ plan[sel.dataset.day] = sel.value; });
+  save(LS.plan, plan);
+  checkBadges();
+  showToast('✅ Weekly plan saved!');
+  showView('dashboard');
+}
+
+/* ================= REAL EXERCISE PHOTOS =================
+   Public-domain demonstration photos from the free-exercise-db project
+   (github.com/yuhonas/free-exercise-db, Unlicense), served via jsDelivr CDN. */
+const EXDB = 'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/';
+function photoUrl(id){ return EXDB + id + '/0.jpg'; }
+function getExerciseId(name){
+  const n = name.toLowerCase();
+  if(n.includes('rest')) return 'Childs_Pose';
+  if(n.includes('wide') && n.includes('push')) return 'Push-Up_Wide';
+  if(n.includes('incline') && n.includes('push')) return 'Incline_Push-Up';
+  if(n.includes('decline') && n.includes('push')) return 'Decline_Push-Up';
+  if(n.includes('push')) return 'Pushups';
+  if(n.includes('mountain climber')) return 'Mountain_Climbers';
+  if(n.includes('v-up')) return 'Jackknife_Sit-Up';
+  if(n.includes('bicycle')) return 'Elbow_to_Knee';
+  if(n.includes('russian twist')) return 'Russian_Twist';
+  if(n.includes('torso twist') || n.includes('hip circle')) return 'Torso_Rotation';
+  if(n.includes('crunch')) return 'Crunches';
+  if(n.includes('leg raise')) return 'Front_Leg_Raises';
+  if(n.includes('plank')) return 'Plank';
+  if(n.includes('wall sit')) return 'Chair_Squat';
+  if(n.includes('jump squat') || n.includes('broad jump') || n.includes('squat to punch')) return 'Freehand_Jump_Squat';
+  if(n.includes('squat')) return 'Bodyweight_Squat';
+  if(n.includes('lunge')) return 'Bodyweight_Walking_Lunge';
+  if(n.includes('calf raise')) return 'Standing_Calf_Raises';
+  if(n.includes('jumping jack')) return 'Star_Jump';
+  if(n.includes('burpee')) return 'Knee_Tuck_Jump';
+  if(n.includes('butt kick')) return 'Double_Leg_Butt_Kick';
+  if(n.includes('high knee') || n.includes('fast feet') || n.includes('sprint')) return 'Running_Treadmill';
+  if(n.includes('skater')) return 'Lateral_Box_Jump';
+  if(n.includes('tricep kickback')) return 'Tricep_Dumbbell_Kickback';
+  if(n.includes('overhead') && n.includes('tricep')) return 'Overhead_Triceps';
+  if(n.includes('overhead') || n.includes('press')) return 'Dumbbell_Shoulder_Press';
+  if(n.includes('curl')) return 'Dumbbell_Bicep_Curl';
+  if(n.includes('lateral raise')) return 'Side_Lateral_Raise';
+  if(n.includes('front raise')) return 'Front_Raise_And_Pullover';
+  if(n.includes('arm circle')) return 'Arm_Circles';
+  if(n.includes('superman') || n.includes('snow angel') || n.includes('y-raise')) return 'Superman';
+  if(n.includes('cat-cow') || n.includes('cat cow')) return 'Cat_Stretch';
+  if(n.includes('glute kickback')) return 'Glute_Kickback';
+  if(n.includes('hip raise')) return 'Bent-Knee_Hip_Raise';
+  if(n.includes('glute bridge')) return 'Single_Leg_Glute_Bridge';
+  if(n.includes('inchworm')) return 'Inchworm';
+  if(n.includes('spider crawl')) return 'Spider_Crawl';
+  if(n.includes('step-up') || n.includes('step up')) return 'Step-up_with_Knee_Raise';
+  if(n.includes('box jump')) return 'Front_Box_Jump';
+  if(n.includes('dip')) return 'Bench_Dips';
+  if(n.includes('hamstring')) return 'Hamstring_Stretch';
+  if(n.includes('quad')) return 'Quad_Stretch';
+  if(n.includes('shoulder stretch')) return 'Shoulder_Stretch';
+  if(n.includes("child's pose")) return 'Childs_Pose';
+  return 'Bodyweight_Squat';
+}
+/* ================= FORM CUES ================= */
+const exerciseInstructions = {
+  'Regular Pushups': 'Hands shoulder-width apart, body in a straight line. Lower your chest to the floor, then push back up.',
+  'Wide Pushups': 'Place hands wider than shoulders to target the chest more. Lower slowly, elbows flaring outward.',
+  'Knee Pushups': 'Drop to your knees, keep hips in line with your back. Lower chest to the floor and push back up.',
+  'Incline Pushups': 'Hands on a raised surface (chair, step). Easier variation — keep your core tight throughout.',
+  'Decline Pushups': 'Feet raised on a step or chair, hands on the floor. Targets upper chest — keep your body straight.',
+  'Diamond Pushups': 'Form a diamond shape with your thumbs and index fingers under your chest. Great for triceps.',
+  'Clap Pushups': 'Explosively push up off the floor and clap before landing softly. Advanced — control the landing.',
+  'Close-Grip Pushups': 'Hands close together under your chest, elbows tucked in. Targets triceps and inner chest.',
+  'Crunches': 'Lie on your back, knees bent. Curl your shoulders off the floor using your abs, not your neck.',
+  'Leg Raises': 'Lie flat, legs straight. Lift them to 90°, keeping your lower back pressed into the floor.',
+  'Plank': 'Forearms and toes on the floor, body in a straight line. Squeeze your core and don\'t let hips sag.',
+  'Side Plank': 'Balance on one forearm, body in a straight line sideways. Keep hips lifted, core braced.',
+  'Side Plank (Left)': 'Balance on your left forearm, stack your feet, lift your hips into a straight line.',
+  'Side Plank (Right)': 'Balance on your right forearm, stack your feet, lift your hips into a straight line.',
+  'Bicycle Crunches': 'Bring opposite elbow to opposite knee in a pedaling motion. Keep your lower back on the floor.',
+  'Russian Twists': 'Sit with knees bent, lean back slightly, twist your torso side to side, tapping the floor.',
+  'Mountain Climbers': 'From a plank, drive your knees toward your chest quickly, alternating legs.',
+  'V-Ups': 'Lie flat, then simultaneously lift your legs and torso to touch your toes, forming a V shape.',
+  'Standing Oblique Crunch': 'Standing tall, bring your elbow down to meet your raised knee on the same side.',
+  'Bodyweight Squats': 'Feet shoulder-width apart, sit your hips back and down like sitting in a chair. Chest up.',
+  'Lunges': 'Step forward, lower until both knees form 90°. Push back to start and switch legs.',
+  'Wall Sit': 'Back flat against a wall, slide down until knees are at 90°. Hold — thighs parallel to the floor.',
+  'Jump Squats': 'Squat down, then explode upward into a jump. Land softly back into the squat position.',
+  'Calf Raises': 'Stand tall, rise up onto your toes as high as possible, then lower slowly. Repeat.',
+  'Sumo Squats': 'Feet wide, toes turned out. Squat down keeping knees tracking over your toes.',
+  'Squat Pulses': 'Hold a squat position and pulse a few inches up and down without standing all the way up.',
+  'Broad Jumps': 'Swing your arms back, then jump forward as far as possible, landing softly in a squat.',
+  'Jumping Jacks': 'Jump feet apart while raising arms overhead, then jump back to start. Keep a steady rhythm.',
+  'Burpees': 'Squat, kick feet back to a plank, do a pushup, jump feet back in, then explode up into a jump.',
+  'High Knees': 'Run in place, driving your knees up to hip height as fast as you can. Pump your arms.',
+  'Squat to Punch': 'Squat down, then stand and throw a punch forward as you rise. Alternate arms.',
+  'Plank Jacks': 'From a plank, jump your feet wide and back together, like a jumping jack for your legs.',
+  'Bottle Bicep Curls': 'Hold a water bottle in each hand, curl up toward your shoulders, then lower with control.',
+  'Overhead Tricep Extension': 'Hold a bottle with both hands overhead, lower it behind your head, then extend back up.',
+  'Overhead Extension': 'Hold a bottle overhead with both hands, bend elbows to lower behind head, then straighten.',
+  'Lateral Raises': 'Arms at your sides, raise them out to shoulder height, then lower slowly. Keep a slight elbow bend.',
+  'Front Raises': 'Raise your arms straight in front of you to shoulder height, then lower with control.',
+  'Tricep Kickbacks': 'Hinge forward, elbow bent at your side, extend your forearm straight back, then return.',
+  'Overhead Press': 'Press your arms straight overhead from shoulder height, then lower back down with control.',
+  'Arm Circles': 'Extend arms out to the sides and make small, controlled circles. Switch direction halfway.',
+  'Butt Kicks': 'Jog in place, kicking your heels up to touch your glutes. Keep a quick, light pace.',
+  'Fast Feet': 'Quickly tap your feet up and down in place, staying light on your toes.',
+  'Skater Jumps': 'Leap sideways from one foot to the other in a skating motion, swinging arms for balance.',
+  'Sprint in Place': 'Run in place as fast as you can, driving your knees and pumping your arms hard.',
+  'Superman Hold': 'Lie face down, lift arms and legs off the floor at once, hold, and squeeze your lower back.',
+  'Superman Pulses': 'Lie face down, lift arms and legs, then pulse up and down in small controlled movements.',
+  'Reverse Snow Angels': 'Lie face down, arms at your sides, sweep them up overhead and back like a snow angel.',
+  'Prone Y-Raise': 'Lie face down, arms out in a Y shape, lift them slightly off the floor and hold.',
+  'Cat-Cow Stretch': 'On hands and knees, arch your back up (cat), then dip it down (cow). Move slowly.',
+  'Hip Circles': 'Stand tall, hands on hips, draw large circles with your hips in one direction, then reverse.',
+  'Torso Twists': 'Stand with feet shoulder-width, rotate your upper body side to side, keeping hips forward.',
+  'Hamstring Stretch': 'Sit or stand, extend one leg, hinge at the hips and reach toward your toes. Hold gently.',
+  'Quad Stretch': 'Standing, grab one ankle behind you and pull your heel toward your glutes. Hold and switch.',
+  'Shoulder Stretch': 'Pull one arm across your chest with the other arm, hold, then switch sides.',
+  "Child's Pose": 'Kneel and sit back on your heels, stretch your arms forward, and relax your chest to the floor.',
+  'Glute Bridges': 'Lie on your back, knees bent, feet flat. Lift your hips up, squeezing your glutes at the top.',
+  'Glute Bridge Pulses': 'Hold a bridge position and pulse your hips a few inches up and down.',
+  'Single-Leg Glute Bridge': 'Bridge position with one leg extended straight. Push through the grounded heel to lift.',
+  'Glute Kickbacks': 'On hands and knees, kick one leg straight back and up, squeezing your glute at the top.',
+  'Hip Raises': 'Lie on your back, knees bent, lift your hips off the floor and squeeze at the top.',
+  'Inchworms': 'From standing, hinge forward, walk your hands out to a plank, then walk feet up to hands.',
+  'Spider Crawls': 'From a plank, bring one knee out toward the same-side elbow, then switch sides.',
+  'Step-Ups': 'Step one foot onto a sturdy box or step, drive through the heel to stand, then step back down.',
+  'Box Jumps': 'Swing your arms and jump both feet onto a sturdy box or step, landing softly with bent knees.',
+  'Bench Dips': 'Hands on a chair behind you, legs extended. Lower your body by bending your elbows, then push up.',
+  'Rest': 'Catch your breath, shake it out, and get ready for the next move.',
+};
+function photoLoaded(img){
+  img.classList.remove('opacity-0');
+  const ph = img.previousElementSibling;
+  if(ph && ph.classList.contains('photo-placeholder')) ph.remove();
+}
+function photoFailed(img){
+  img.parentElement.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-500 gap-1"><span class="text-3xl">📷</span><span class="text-[10px] text-center px-2">Photo needs an internet connection</span></div>';
+}
+function renderExercisePhoto(name){
+  const id = getExerciseId(name);
+  return `<div class="photo-placeholder absolute inset-0 bg-zinc-800 animate-pulse"></div><img src="${photoUrl(id)}" alt="${name} demonstration" loading="eager" class="relative w-full h-full object-cover opacity-0 transition-opacity duration-300" onload="photoLoaded(this)" onerror="photoFailed(this)">`;
+}
+
+/* ================= WORKOUT PLAYER ================= */
+let currentWorkout=null, currentStepIndex=0, timeLeft=30, isRest=false, timerInterval=null, isPaused=false;
+const WORK_TIME=30, REST_TIME=10;
+
+function startWorkout(id){
+  unlockAudio();
+  updateVoiceBtn();
+  currentWorkout = workouts.find(w=>w.id===id);
+  currentStepIndex = 0;
+  isRest = false;
+  isPaused = false;
+  document.getElementById('playerWorkoutName').textContent = currentWorkout.name;
+  document.getElementById('playerModal').classList.remove('hidden');
+  document.getElementById('pauseBtn').textContent='PAUSE';
+  runStep();
+}
+function runStep(){
+  clearInterval(timerInterval);
+  const ex = currentWorkout.exercises[currentStepIndex];
+  isRest = ex.toLowerCase()==='rest';
+  timeLeft = isRest ? REST_TIME : WORK_TIME;
+  document.getElementById('playerExercise').textContent = ex;
+  document.getElementById('playerPhase').textContent = isRest ? 'REST' : 'WORK';
+  document.getElementById('playerStepCount').textContent = `Step ${currentStepIndex+1} of ${currentWorkout.exercises.length}`;
+  document.getElementById('exerciseIcon').innerHTML = renderExercisePhoto(ex);
+  document.getElementById('playerInstructions').textContent = exerciseInstructions[ex] || 'Keep good form and controlled breathing throughout.';
+  const nextEx = currentWorkout.exercises[currentStepIndex+1];
+  speakStep(ex, isRest, nextEx);
+  updateRing();
+  updateProgress();
+  timerInterval = setInterval(tick, 1000);
+}
+function tick(){
+  if(isPaused) return;
+  timeLeft--;
+  updateRing();
+  if(timeLeft>0 && timeLeft<=3){ beep(880, 0.12); }
+  if(timeLeft<=0){ beep(440, 0.3); nextStep(); }
+}
+function updateRing(){
+  document.getElementById('playerTimer').textContent = timeLeft;
+  const total = isRest ? REST_TIME : WORK_TIME;
+  const offset = 283 * (1 - timeLeft/total);
+  document.getElementById('playerRing').style.strokeDashoffset = offset;
+}
+function updateProgress(){
+  document.getElementById('playerProgress').style.width = ((currentStepIndex)/currentWorkout.exercises.length*100)+'%';
+}
+function nextStep(){
+  clearInterval(timerInterval);
+  currentStepIndex++;
+  if(currentStepIndex >= currentWorkout.exercises.length){ finishWorkout(); } else { runStep(); }
+}
+function skipStep(){ nextStep(); }
+function togglePause(){ isPaused=!isPaused; document.getElementById('pauseBtn').textContent = isPaused?'RESUME':'PAUSE'; }
+function closePlayer(){ clearInterval(timerInterval); if(speechSupported) speechSynthesis.cancel(); document.getElementById('playerModal').classList.add('hidden'); }
+function finishWorkout(){
+  clearInterval(timerInterval);
+  document.getElementById('playerProgress').style.width='100%';
+  document.getElementById('playerModal').classList.add('hidden');
+  const history = load(LS.history, []);
+  history.unshift({name:currentWorkout.name, mins:currentWorkout.mins, cat:currentWorkout.cat, date:new Date().toISOString()});
+  save(LS.history, history);
+  const stats = computeStats();
+  const gain = currentWorkout.mins*10 + stats.streak*5;
+  addXP(gain);
+  checkBadges();
+  launchConfetti();
+  speak(`Workout complete! Great job finishing ${currentWorkout.name}. You earned ${gain} experience points.`);
+  document.getElementById('doneSummary').textContent = `${currentWorkout.name} • ${currentWorkout.mins} mins • ${currentWorkout.exercises.length} exercises`;
+  document.getElementById('doneXP').textContent = `+${gain} XP`;
+  document.getElementById('doneModal').classList.remove('hidden');
+}
+function closeDone(){ document.getElementById('doneModal').classList.add('hidden'); renderDashboard(); }
+
+function launchConfetti(){
+  const colors=['#a855f7','#ec4899','#f97316','#ffffff'];
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.width = (6+Math.random()*6)+'px';
+    c.style.height = c.style.width;
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (2+Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 4500);
+  }
+}
+
+/* ================= SOUND CUES ================= */
+let audioCtx = null;
+function unlockAudio(){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  }catch(e){}
+}
+function beep(freq, duration){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
+  }catch(e){}
+}
+
+/* ================= VOICE CUES (Web Speech API) ================= */
+const speechSupported = 'speechSynthesis' in window;
+let voiceEnabled = load(LS.voice, true);
+function updateVoiceBtn(){
+  const btn = document.getElementById('voiceToggleBtn');
+  if(!btn) return;
+  if(!speechSupported){ btn.style.display = 'none'; return; }
+  btn.textContent = voiceEnabled ? '🔊' : '🔇';
+}
+function toggleVoice(){
+  voiceEnabled = !voiceEnabled;
+  save(LS.voice, voiceEnabled);
+  updateVoiceBtn();
+  if(!voiceEnabled) speechSynthesis.cancel();
+  else speak('Voice cues on');
+}
+function speak(text){
+  if(!speechSupported || !voiceEnabled) return;
+  try{
+    speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+    speechSynthesis.speak(utter);
+  }catch(e){}
+}
+function speakStep(ex, isRestPhase, nextEx){
+  if(isRestPhase){
+    speak(nextEx ? `Rest. Coming up next: ${nextEx}` : 'Rest.');
+  } else {
+    speak(`${ex}. ${exerciseInstructions[ex] || ''}`);
+  }
+}
+
+/* ================= BMI / CALORIE CALCULATORS ================= */
+function calcBMI(){
+  const h = parseFloat(document.getElementById('bmiHeight').value)/100;
+  const w = parseFloat(document.getElementById('bmiWeight').value);
+  if(!h || !w || h<=0 || w<=0){ alert('Enter valid height and weight'); return; }
+  const bmi = w/(h*h);
+  let cat='', color='';
+  if(bmi<18.5){cat='Underweight';color='#facc15';}
+  else if(bmi<25){cat='Normal';color='#34d399';}
+  else if(bmi<30){cat='Overweight';color='#fb923c';}
+  else {cat='Obese';color='#f87171';}
+  document.getElementById('bmiResult').classList.remove('hidden');
+  document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+  document.getElementById('bmiValue').style.color = color;
+  document.getElementById('bmiCategory').textContent = cat;
+  document.getElementById('bmiCategory').style.color = color;
+  const bar = document.getElementById('bmiBar');
+  bar.style.width = Math.min(100,(bmi/40)*100)+'%';
+  bar.style.background = color;
+}
+function calcCalories(){
+  const age = parseFloat(document.getElementById('calAge').value);
+  const gender = document.getElementById('calGender').value;
+  const h = parseFloat(document.getElementById('calHeight').value);
+  const w = parseFloat(document.getElementById('calWeight').value);
+  const act = parseFloat(document.getElementById('calActivity').value);
+  if(!age||!h||!w){ alert('Fill in all fields'); return; }
+  const bmr = gender==='male' ? (10*w + 6.25*h - 5*age + 5) : (10*w + 6.25*h - 5*age - 161);
+  const maintain = Math.round(bmr*act);
+  document.getElementById('calResult').classList.remove('hidden');
+  document.getElementById('calValue').textContent = maintain.toLocaleString();
+  document.getElementById('calLose').textContent = (maintain-500).toLocaleString()+' kcal';
+  document.getElementById('calGain').textContent = (maintain+500).toLocaleString()+' kcal';
+  document.getElementById('targetCalories').value = maintain;
+  save(LS.target, maintain);
+}
+
+/* ================= NUTRITION / MEAL DIARY ================= */
+function renderNutrition(){
+  document.getElementById('targetCalories').value = load(LS.target, '') || '';
+  renderFoodTable('');
+  renderDiary();
+}
+function renderFoodTable(filter){
+  const body = document.getElementById('foodTableBody');
+  const list = naijaFoods.filter(f=>f.food.toLowerCase().includes(filter.toLowerCase()));
+  body.innerHTML = list.map(f=>`
+    <tr>
+      <td class="p-3 font-bold">${f.food}</td>
+      <td class="p-3 text-zinc-400 hidden sm:table-cell">${f.serving}</td>
+      <td class="p-3 text-right text-pink-400 font-bold">${f.cal}</td>
+      <td class="p-3 text-right text-zinc-500 text-xs hidden sm:table-cell">${f.p}/${f.c}/${f.f}g</td>
+      <td class="p-3 text-right"><button class="logBtn brand-btn text-white text-xs font-bold px-3 py-1.5 rounded-full" data-food='${JSON.stringify(f).replace(/'/g,"&apos;")}'>+ Log</button></td>
+    </tr>`).join('');
+  body.querySelectorAll('.logBtn').forEach(btn=>btn.addEventListener('click', ()=>{
+    const f = JSON.parse(btn.dataset.food.replace(/&apos;/g,"'"));
+    logMeal(f);
+  }));
+}
+document.getElementById('foodSearch').addEventListener('input', e=>renderFoodTable(e.target.value));
+document.getElementById('targetCalories').addEventListener('change', e=>{ save(LS.target, parseFloat(e.target.value)||0); renderDiary(); });
+
+function logMeal(f){
+  const meals = load(LS.meals, {});
+  const t = todayStr();
+  if(!meals[t]) meals[t]=[];
+  meals[t].push({name:f.food, cal:f.cal, p:f.p, c:f.c, f:f.f, time:new Date().toISOString()});
+  save(LS.meals, meals);
+  checkBadges();
+  renderDiary();
+  showToast(`🍽️ Logged: ${f.food}`);
+}
+function removeMeal(idx){
+  const meals = load(LS.meals, {});
+  const t = todayStr();
+  if(meals[t]){ meals[t].splice(idx,1); save(LS.meals, meals); renderDiary(); }
+}
+function renderDiary(){
+  const meals = load(LS.meals, {});
+  const todays = meals[todayStr()] || [];
+  const list = document.getElementById('diaryList');
+  list.innerHTML = todays.length===0 ? `<p class="text-zinc-500 text-sm">No meals logged today.</p>` :
+    todays.map((m,i)=>`<div class="flex justify-between items-center bg-black rounded-lg px-3 py-2 text-sm"><span>${m.name}</span><span class="flex items-center gap-2 text-zinc-400">${m.cal} kcal <button onclick="removeMeal(${i})" class="text-red-400 hover:text-red-300">&times;</button></span></div>`).join('');
+
+  const totalCal = todays.reduce((s,m)=>s+m.cal,0);
+  const totalP = todays.reduce((s,m)=>s+m.p,0);
+  const totalC = todays.reduce((s,m)=>s+m.c,0);
+  const totalF = todays.reduce((s,m)=>s+m.f,0);
+  const target = load(LS.target, 0) || 0;
+  document.getElementById('diaryConsumed').textContent = `${totalCal} kcal consumed`;
+  document.getElementById('diaryTarget').textContent = `/ ${target || '—'} kcal`;
+  document.getElementById('diaryBar').style.width = target ? Math.min(100, (totalCal/target)*100)+'%' : '0%';
+
+  const pCal=totalP*4, cCal=totalC*4, fCal=totalF*9, macroTotal = pCal+cCal+fCal;
+  const donut = document.getElementById('macroDonut');
+  if(macroTotal===0){
+    donut.style.background = '#27272a';
+  } else {
+    const p1 = (pCal/macroTotal)*100;
+    const p2 = p1 + (cCal/macroTotal)*100;
+    donut.style.background = `conic-gradient(#a855f7 0% ${p1}%, #ec4899 ${p1}% ${p2}%, #f97316 ${p2}% 100%)`;
+  }
+}
+
+/* ================= PROGRESS: CHARTS ================= */
+function addWeightLog(){
+  const w = parseFloat(document.getElementById('weightLogInput').value);
+  if(!w || w<=0){ alert('Enter a valid weight'); return; }
+  const log = load(LS.weight, []);
+  log.push({date:todayStr(), weight:w});
+  save(LS.weight, log);
+  document.getElementById('weightLogInput').value='';
+  checkBadges();
+  renderProgress();
+}
+function renderProgress(){
+  const log = load(LS.weight, []);
+  const svg = document.getElementById('weightChart');
+  if(log.length<2){
+    svg.innerHTML = `<text x="150" y="50" fill="#71717a" font-size="10" text-anchor="middle">Log at least 2 weights to see your trend</text>`;
+  } else {
+    const weights = log.map(l=>l.weight);
+    const min = Math.min(...weights)-2, max = Math.max(...weights)+2;
+    const pts = log.map((l,i)=>{
+      const x = (i/(log.length-1))*290+5;
+      const y = 95 - ((l.weight-min)/(max-min))*90;
+      return `${x},${y}`;
+    }).join(' ');
+    svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#ec4899" stroke-width="2"/>` +
+      log.map((l,i)=>{
+        const x = (i/(log.length-1))*290+5;
+        const y = 95 - ((l.weight-min)/(max-min))*90;
+        return `<circle cx="${x}" cy="${y}" r="3" fill="#a855f7"/>`;
+      }).join('');
+  }
+
+  const history = load(LS.history, []);
+  const minutesByDay = {};
+  for(let i=13;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    minutesByDay[d.toISOString().slice(0,10)] = 0;
+  }
+  history.forEach(h=>{ const d=h.date.slice(0,10); if(minutesByDay[d]!==undefined) minutesByDay[d]+=h.mins; });
+  const maxMin = Math.max(1, ...Object.values(minutesByDay));
+  document.getElementById('minutesChart').innerHTML = Object.entries(minutesByDay).map(([d,m])=>`
+    <div class="flex-1 flex flex-col items-center justify-end h-full">
+      <div class="w-full brand-btn rounded-t" style="height:${(m/maxMin)*100}%; min-height:${m>0?'4px':'0'}"></div>
+      <div class="text-[8px] text-zinc-600 mt-1">${new Date(d).getDate()}</div>
+    </div>`).join('');
+
+  const heat = document.getElementById('heatmap');
+  const countByDay = {};
+  history.forEach(h=>{ const d=h.date.slice(0,10); countByDay[d]=(countByDay[d]||0)+1; });
+  let cells = [];
+  for(let i=83;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const c = countByDay[key]||0;
+    const bg = c===0?'#27272a':c===1?'#7e22ce':c===2?'#a855f7':'#ec4899';
+    cells.push(`<div class="heat-cell" style="background:${bg}" title="${key}: ${c} workout(s)"></div>`);
+  }
+  heat.innerHTML = cells.join('');
+
+  const earned = load(LS.badges, []);
+  document.getElementById('badgeGrid').innerHTML = badgeDefs.map(b=>{
+    const got = earned.includes(b.id);
+    return `<div class="text-center p-3 rounded-xl border ${got?'border-pink-500 bg-white/5':'border-zinc-800 opacity-40'}">
+      <div class="text-2xl">${b.emoji}</div>
+      <div class="text-[10px] font-bold mt-1">${b.name}</div>
+      <div class="text-[9px] text-zinc-500 mt-0.5">${b.desc}</div>
+    </div>`;
+  }).join('');
+
+  const histList = document.getElementById('historyList');
+  histList.innerHTML = history.length===0 ? `<p class="text-zinc-500 text-sm">No workouts yet.</p>` : history.slice(0,10).map(h=>{
+    const c = categories[h.cat];
+    const d = new Date(h.date);
+    return `<div class="bg-black rounded-lg p-3 flex justify-between text-sm"><span class="font-bold">${c?c.emoji:''} ${esc(h.name)}</span><span class="text-zinc-500">${d.toLocaleDateString()} • ${h.mins}m</span></div>`;
+  }).join('');
+}
+function clearHistory(){
+  if(confirm('Clear all workout history? (Badges & XP are kept)')){
+    localStorage.removeItem(LS.history);
+    renderProgress();
+    renderDashboard();
+  }
+}
+
+/* ================= PWA: OFFLINE + INSTALL ================= */
+let deferredInstall = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+function setInstallText(t){ document.getElementById('installText').textContent = t; }
+if(isStandalone()){
+  setInstallText('Installed ✓ You\'re running the app.');
+} else if(/iphone|ipad|ipod/i.test(navigator.userAgent)){
+  setInstallText('On iPhone: tap the Share button, then “Add to Home Screen”.');
+}
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault();
+  deferredInstall = e;
+  setInstallText('Get one-tap access and offline workouts.');
+  document.getElementById('installBtn').classList.remove('hidden');
+});
+window.addEventListener('appinstalled', ()=>{
+  deferredInstall = null;
+  document.getElementById('installBtn').classList.add('hidden');
+  setInstallText('Installed ✓');
+});
+async function installApp(){
+  if(!deferredInstall) return;
+  deferredInstall.prompt();
+  await deferredInstall.userChoice;
+  deferredInstall = null;
+  document.getElementById('installBtn').classList.add('hidden');
+}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(reg=>{
+      const urls = [...new Set(exerciseCatalog.concat('Rest').map(e=>photoUrl(getExerciseId(e))))];
+      if(reg.active) reg.active.postMessage({type:'CACHE_URLS', urls});
+    }).catch(()=>{});
+  });
+}
+
+/* ================= INIT ================= */
+showView('dashboard');
+</script>
+</body>
+</html>
