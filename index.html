@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NAIJA FIT FREE | No Gym, No Wahala</title>
 <meta name="description" content="Free fitness app for Nigerians: 20+ workouts, weekly plans, XP & badges, calorie & BMI tools, meal diary, progress charts.">
-<meta name="theme-color" content="#08060d">
+<meta name="theme-color" content="#060a17">
+<script>(function(){var t='dark';try{var s=JSON.parse(localStorage.getItem('naijaFitTheme'));if(s==='dark'||s==='flip7'||s==='clean')t=s;}catch(e){}
+var r=document.documentElement,m=document.querySelector('meta[name=theme-color]');
+if(t==='clean'){r.classList.add('clean');m.content=matchMedia('(prefers-color-scheme:dark)').matches?'#131009':'#FBF6EA';}
+else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.content='#060a17';}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,25 +22,33 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  :root{--bg:#08060d;}
+  :root{
+    --bg:#060a17;
+    --c1:#22d3ee; --c2:#60a5fa; --c3:#a78bfa;
+    --ring1:#22d3ee; --ring2:#60a5fa; --ring3:#a78bfa; --ring-track:#1b2540;
+    --chart-p:#22d3ee; --chart-c:#8b7cff; --chart-f:#f472b6; --chart-track:#1b2540;
+    --chart-line:#22d3ee; --chart-dot:#a78bfa;
+    --heat0:#151e36; --heat1:#164e7a; --heat2:#2b8fd0; --heat3:#22d3ee;
+    --confetti1:#22d3ee; --confetti2:#60a5fa; --confetti3:#a78bfa; --confetti4:#ffffff;
+  }
   html{scroll-behavior:smooth;}
-  body{background:radial-gradient(circle at 20% 0%, #1a0b2e 0%, #08060d 45%) fixed, var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;padding-bottom:76px;}
-  .brand-text{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .brand-btn{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);}
-  .glow{box-shadow:0 0 30px rgba(236,72,153,.35);}
+  body{background:radial-gradient(circle at 15% -5%, #0f2a5c 0%, rgba(15,42,92,0) 52%) fixed, radial-gradient(circle at 95% 18%, rgba(124,108,255,.22) 0%, rgba(124,108,255,0) 45%) fixed, var(--bg);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;padding-bottom:76px;}
+  .brand-text{background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .brand-btn{background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));}
+  .glow{box-shadow:0 0 30px rgba(96,165,250,.35);}
   .card-hover{transition:transform .2s ease, box-shadow .2s ease;}
   .card-hover:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.5);}
   ::-webkit-scrollbar{width:6px;}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(#a855f7,#ec4899);border-radius:10px;}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(#22d3ee,#a78bfa);border-radius:10px;}
   .confetti{position:fixed;top:-10px;border-radius:2px;pointer-events:none;z-index:9999;animation:fall linear forwards;}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0.3;}}
   input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1;}
   .view{display:none;}
   .view.active{display:block;}
   .navbtn.active{color:#fff;}
-  .navbtn.active .navicon{background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .navbtn.active .navicon{background:linear-gradient(90deg,#22d3ee,#60a5fa,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent;}
   .chip{transition:all .15s ease;}
-  .chip.active{background:linear-gradient(90deg,#a855f7,#ec4899);color:#fff;border-color:transparent;}
+  .chip.active{background:linear-gradient(90deg,#22d3ee,#60a5fa);color:#04122b;border-color:transparent;}
   .toast{animation:toastIn .3s ease, toastOut .4s ease 2.6s forwards;}
   @keyframes toastIn{from{opacity:0;transform:translate(-50%,20px);}to{opacity:1;transform:translate(-50%,0);}}
   @keyframes toastOut{to{opacity:0;transform:translate(-50%,-10px);}}
@@ -41,7 +56,7 @@
 
   /* Liquid Glass (iOS 26 style) */
   .glass-nav{
-    background:linear-gradient(180deg, rgba(40,28,58,.55), rgba(10,7,16,.75));
+    background:linear-gradient(180deg, rgba(30,52,96,.5), rgba(6,10,23,.78));
     -webkit-backdrop-filter:blur(28px) saturate(180%);
     backdrop-filter:blur(28px) saturate(180%);
     border:1px solid rgba(255,255,255,.12);
@@ -64,9 +79,9 @@
     pointer-events:none;
   }
   .navbtn.active .glass-icon{
-    background:linear-gradient(135deg, rgba(168,85,247,.4), rgba(236,72,153,.4), rgba(249,115,22,.35));
+    background:linear-gradient(135deg, rgba(34,211,238,.42), rgba(96,165,250,.4), rgba(167,139,250,.38));
     border-color:rgba(255,255,255,.3);
-    box-shadow:0 4px 16px rgba(236,72,153,.4), inset 0 1px 1px rgba(255,255,255,.35);
+    box-shadow:0 4px 18px rgba(96,165,250,.45), inset 0 1px 1px rgba(255,255,255,.4);
     transform:translateY(-3px) scale(1.08);
   }
   .glass-card{
@@ -82,13 +97,280 @@
     backdrop-filter:blur(14px) saturate(160%);
     border:1px solid rgba(255,255,255,.14);
   }
+
+  /* Liquid Glass aurora palette (base theme) */
+  .brand-btn{color:#04122b!important;font-weight:800;}
+  .bg-zinc-900{background:linear-gradient(145deg,rgba(28,44,86,.55),rgba(10,16,34,.75))!important;}
+  .bg-zinc-800{background:#1b2540!important;}
+  .border-zinc-800,.border-zinc-700{border-color:rgba(148,170,230,.2)!important;}
+  html:not(.flip7):not(.clean) span.bg-gradient-to-r{background:rgba(96,165,250,.16)!important;color:#bfdbfe!important;border:1px solid rgba(96,165,250,.35);}
+  .text-pink-400{color:#67e8f9!important;}
+  .text-orange-300{color:#93c5fd!important;}
+  .border-pink-500{border-color:#60a5fa!important;}
+  .focus\:border-pink-500:focus{border-color:#60a5fa!important;}
+  #onboardCard{background:linear-gradient(135deg,rgba(37,99,235,.30),rgba(124,108,255,.14))!important;}
+  #greetingCard{background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(96,165,250,.12),rgba(124,108,255,.14))!important;}
+  #challengeCard{background:linear-gradient(135deg,rgba(34,211,238,.20),rgba(124,108,255,.16))!important;}
+
+  /* ============ FLIP7 THEME (retro teal / coral / gold) ============ */
+  html.flip7{
+    --bg:#EFF8F7;
+    --f-teal:#2BA8A2; --f-teal-l:#3CC4BD; --f-teal-d:#1E8C86; --f-teal-bg:#E8F6F5; --f-deep:#0E5A56; --f-btn:#187A74;
+    --f-gold:#FFD23F; --f-gold-l:#FFE47A; --f-gold-d:#E6B800;
+    --f-coral:#EF6C4A; --f-coral-d:#D45233; --f-cream:#FFF8E7; --f-sky:#5DADE2;
+    --f-ink:#12403D; --f-muted:#4A7370; --f-line:#CDE8E6;
+    --c1:#2BA8A2; --c2:#FFD23F; --c3:#EF6C4A;
+    --ring1:#FFE47A; --ring2:#FFD23F; --ring3:#EF6C4A; --ring-track:rgba(255,255,255,.22);
+    --chart-p:#2BA8A2; --chart-c:#FFD23F; --chart-f:#EF6C4A; --chart-track:#DDEFED;
+    --chart-line:#1E8C86; --chart-dot:#EF6C4A;
+    --heat0:#DDEFED; --heat1:#A8DEDA; --heat2:#2BA8A2; --heat3:#FFD23F;
+    --confetti1:#2BA8A2; --confetti2:#FFD23F; --confetti3:#EF6C4A; --confetti4:#5DADE2;
+  }
+  html.flip7 body{background:var(--bg);color:var(--f-ink);}
+  html.flip7 ::-webkit-scrollbar-thumb{background:var(--f-teal);}
+  html.flip7 .font-black{font-weight:800;letter-spacing:.02em;}
+
+  /* text + surfaces (remap the dark palette utilities) */
+  html.flip7 .text-white{color:var(--f-ink)!important;}
+  html.flip7 .text-zinc-300,html.flip7 .text-zinc-400,html.flip7 .text-zinc-500,html.flip7 .text-zinc-600{color:var(--f-muted)!important;}
+  html.flip7 .text-pink-400,html.flip7 .text-orange-300{color:var(--f-teal-d)!important;}
+  html.flip7 .text-red-400,html.flip7 .text-red-300{color:var(--f-coral-d)!important;}
+  html.flip7 .bg-zinc-900{background:#fff!important;}
+  html.flip7 .bg-zinc-800{background:#DDEFED!important;}
+  html.flip7 .bg-black{background:var(--f-cream)!important;color:var(--f-ink)!important;}
+  html.flip7 .bg-white\/5,html.flip7 .bg-white\/10,html.flip7 .hover\:bg-white\/5:hover{background:rgba(43,168,162,.09)!important;}
+  html.flip7 .border-zinc-800,html.flip7 .border-zinc-700,html.flip7 .border-white\/10{border-color:var(--f-line)!important;}
+  html.flip7 .divide-zinc-800>:not([hidden])~:not([hidden]){border-color:var(--f-line)!important;}
+  html.flip7 .border-red-900{border-color:var(--f-coral)!important;}
+  html.flip7 .border-pink-500{border-color:var(--f-gold-d)!important;}
+  html.flip7 .focus\:border-pink-500:focus{border-color:var(--f-teal)!important;box-shadow:0 0 0 4px rgba(43,168,162,.15);}
+  html.flip7 input,html.flip7 select,html.flip7 textarea{background:var(--f-cream)!important;color:var(--f-ink)!important;border-color:#E3D6A6!important;}
+  html.flip7 input::placeholder{color:#8AA9A6!important;}
+  html.flip7 .rounded-2xl.bg-zinc-900,html.flip7 .glass-card{
+    background:#fff!important;border:1px solid var(--f-line)!important;border-left:5px solid var(--f-teal-l)!important;
+    box-shadow:0 4px 20px rgba(43,168,162,.10)!important;-webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  html.flip7 .rounded-2xl.bg-zinc-900.card-hover:hover{box-shadow:0 6px 24px rgba(43,168,162,.28)!important;}
+  html.flip7 #view-nutrition .overflow-x-auto{background:#fff;}
+  html.flip7 thead.bg-zinc-900{background:var(--f-teal-bg)!important;}
+  html.flip7 main h3{border-bottom:2px dashed #9FD6D2;padding-bottom:6px;margin-bottom:12px;}
+  html.flip7 #challengeCard h3,html.flip7 .glass-card h3{border:0;padding:0;}
+
+  /* header + wordmark */
+  html.flip7 header{background:var(--f-cream)!important;border-color:#E3D6A6!important;border-bottom-width:2px!important;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html.flip7 header h1{transform:rotate(-2deg);font-weight:800;letter-spacing:.08em;color:var(--f-teal-d);}
+  html.flip7 header .brand-text{background:none;-webkit-background-clip:border-box;-webkit-text-fill-color:var(--f-gold);color:var(--f-gold);
+    text-shadow:2px 0 0 var(--f-ink),-2px 0 0 var(--f-ink),0 2px 0 var(--f-ink),0 -2px 0 var(--f-ink),2px 2px 0 var(--f-ink),-2px -2px 0 var(--f-ink),2px -2px 0 var(--f-ink),-2px 2px 0 var(--f-ink);
+    display:inline-block;transform:rotate(4deg);font-size:1.25em;}
+  html.flip7 .brand-text{background:none;-webkit-text-fill-color:var(--f-teal-d);color:var(--f-teal-d);}
+  html.flip7 .glass-pill{background:var(--f-gold)!important;color:var(--f-ink)!important;border:2px solid var(--f-ink)!important;box-shadow:0 4px 20px rgba(255,210,63,.4);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html.flip7 #headerXP{color:var(--f-ink);}
+
+  /* buttons: gold pill CTA with gloss, bounce */
+  html.flip7 button{transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,background .2s ease;min-height:36px;}
+  html.flip7 button:active{transform:scale(.95);}
+  html.flip7 .brand-btn{
+    background:linear-gradient(180deg,rgba(255,255,255,.5) 0,rgba(255,255,255,0) 52%),linear-gradient(180deg,var(--f-gold-l),var(--f-gold) 60%,var(--f-gold-d))!important;
+    color:var(--f-ink)!important;box-shadow:0 4px 20px rgba(255,210,63,.4);
+  }
+  html.flip7 #xpBar,html.flip7 #diaryBar,html.flip7 #playerProgress,html.flip7 #bmiBar{background:linear-gradient(90deg,var(--f-teal),var(--f-teal-l))!important;box-shadow:none;}
+  html.flip7 #minutesChart .brand-btn{background:linear-gradient(180deg,var(--f-teal-l),var(--f-teal))!important;box-shadow:none;}
+  html.flip7 .startBtn{background:var(--f-btn)!important;color:#fff!important;box-shadow:0 4px 20px rgba(43,168,162,.30);}
+  html.flip7 .toast{border:2px solid var(--f-ink);}
+  html.flip7 .chip{background:#fff;color:var(--f-ink);border-color:var(--f-line)!important;}
+  html.flip7 .chip.active{background:linear-gradient(180deg,var(--f-gold-l),var(--f-gold));color:var(--f-ink);border-color:var(--f-ink)!important;box-shadow:0 4px 16px rgba(255,210,63,.4);}
+  html.flip7 .theme-opt{background:var(--f-teal-bg);color:var(--f-ink);}
+  html.flip7 .theme-opt.selected{border-color:var(--f-gold-d)!important;box-shadow:0 4px 20px rgba(255,210,63,.4);}
+  .theme-opt.selected{border-color:rgba(255,255,255,.6)!important;background:rgba(255,255,255,.08);}
+
+  /* nav */
+  html.flip7 .glass-nav{background:#fff;border:2px solid var(--f-teal-d);box-shadow:0 8px 28px rgba(43,168,162,.30);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html.flip7 .navbtn{color:var(--f-muted)!important;}
+  html.flip7 .navbtn.active{color:var(--f-ink)!important;}
+  html.flip7 .navbtn.active .navicon{background:none;-webkit-text-fill-color:currentColor;color:inherit;}
+  html.flip7 .glass-icon{background:var(--f-teal-bg);border:1px solid #BFE6E3;box-shadow:none;}
+  html.flip7 .glass-icon::before{background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0));height:45%;}
+  html.flip7 .navbtn.active .glass-icon{background:linear-gradient(180deg,var(--f-gold-l),var(--f-gold));border-color:var(--f-ink);box-shadow:0 4px 16px rgba(255,210,63,.5);}
+
+  /* hero cards */
+  html.flip7 #onboardCard,html.flip7 #greetingCard{background:linear-gradient(135deg,#DFF3F1,var(--f-cream))!important;border:1px solid var(--f-line)!important;box-shadow:0 4px 20px rgba(43,168,162,.15);}
+  html.flip7 #challengeCard{background:linear-gradient(135deg,var(--f-gold-l),var(--f-cream))!important;border:1px solid var(--f-gold-d)!important;border-left:5px solid var(--f-gold-d)!important;box-shadow:0 4px 20px rgba(255,210,63,.4);animation:f7Glow 2s ease-in-out infinite;}
+  html.flip7 #challengeCard .glass-icon{background:#fff;}
+  @keyframes f7Glow{0%,100%{box-shadow:0 4px 20px rgba(255,210,63,.35);}50%{box-shadow:0 4px 26px rgba(255,210,63,.7);}}
+
+  /* modals */
+  html.flip7 #playerModal,html.flip7 #doneModal{background:#0E5A56!important;color:#fff;}
+  html.flip7 #playerModal button.brand-btn,html.flip7 #doneModal button.brand-btn{color:var(--f-ink)!important;}
+  html.flip7 #playerModal .text-white,html.flip7 #doneModal .text-white{color:#fff!important;}
+  html.flip7 #playerModal .text-zinc-500,html.flip7 #playerModal .text-zinc-400,html.flip7 #doneModal .text-zinc-400{color:#CFEDEA!important;}
+  html.flip7 #playerModal .brand-text{-webkit-text-fill-color:var(--f-gold);color:var(--f-gold);}
+  html.flip7 #playerModal .bg-zinc-800{background:var(--f-cream)!important;color:var(--f-ink)!important;}
+  html.flip7 #playerModal .bg-zinc-800.text-white{color:var(--f-ink)!important;}
+  html.flip7 #playerModal #playerProgress{box-shadow:none;}
+  html.flip7 #playerModal .w-full.h-2.bg-zinc-800{background:rgba(255,255,255,.2)!important;}
+  html.flip7 #playerModal #exerciseIcon{background:#fff;border:3px solid var(--f-gold);box-shadow:0 4px 20px rgba(255,210,63,.4);}
+  html.flip7 #playerModal .photo-placeholder{background:#DDEFED;}
+  html.flip7 #playerModal button.text-zinc-500{color:#fff!important;}
+  html.flip7 #doneModal .brand-text{-webkit-text-fill-color:var(--f-gold);color:var(--f-gold);}
+  html.flip7 #builderModal{background:rgba(239,248,247,.98)!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+  html.flip7 #builderModal .glass-card{border-left-width:1px!important;}
+
+  /* ribbon banner (Flip7 packaging style) */
+  .ribbon{display:inline-block;}
+  html.flip7 .ribbon{position:relative;z-index:0;background:var(--f-cream);color:var(--f-teal-d)!important;border:3px solid var(--f-ink);padding:.3em 1.1em;letter-spacing:.12em;margin-left:22px;margin-right:22px;}
+  html.flip7 .ribbon::before,html.flip7 .ribbon::after{content:'';position:absolute;top:8px;width:34px;height:100%;background:#F0E2B4;border:3px solid var(--f-ink);z-index:-1;}
+  html.flip7 .ribbon::before{left:-26px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,30% 50%);}
+  html.flip7 .ribbon::after{right:-26px;clip-path:polygon(0 0,100% 0,70% 50%,100% 100%,0 100%);}
+  /* ============ CLEAN THEME (editorial: paper / ink / green / clay) ============ */
+  .hero-clean{display:none;}
+  html.clean{
+    --paper:#FBF6EA; --paper-2:#F3EAD4; --ink:#18140C; --ink-soft:#5E543F;
+    --accent:#1D4ED8; --accent-2:#B45309; --line:rgba(24,20,12,.14); --shadow:rgba(24,20,12,.22);
+    --bg:#FBF6EA;
+    --ring1:#1D4ED8; --ring2:#1D4ED8; --ring3:#B45309; --ring-track:rgba(24,20,12,.12);
+    --chart-p:#1D4ED8; --chart-c:#B45309; --chart-f:#5E543F; --chart-track:#EADFC3;
+    --chart-line:#1D4ED8; --chart-dot:#B45309;
+    --heat0:rgba(24,20,12,.07); --heat1:rgba(29,78,216,.25); --heat2:rgba(29,78,216,.55); --heat3:#1D4ED8;
+    --confetti1:#1D4ED8; --confetti2:#B45309; --confetti3:#18140C; --confetti4:#E0B13A;
+  }
+  @media (prefers-color-scheme:dark){
+    html.clean{
+      --paper:#131009; --paper-2:#1D1810; --ink:#F4ECD7; --ink-soft:#A99C7E;
+      --accent:#6C9BFF; --accent-2:#F5A524; --line:rgba(244,236,215,.16); --shadow:rgba(0,0,0,.55);
+      --bg:#131009;
+      --ring1:#6C9BFF; --ring2:#6C9BFF; --ring3:#F5A524; --ring-track:rgba(244,236,215,.14);
+      --chart-p:#6C9BFF; --chart-c:#F5A524; --chart-f:#A99C7E; --chart-track:#2A2415;
+      --chart-line:#6C9BFF; --chart-dot:#F5A524;
+      --heat0:rgba(244,236,215,.08); --heat1:rgba(108,155,255,.3); --heat2:rgba(108,155,255,.62); --heat3:#6C9BFF;
+      --confetti1:#6C9BFF; --confetti2:#F5A524; --confetti3:#F4ECD7; --confetti4:#E0B13A;
+    }
+  }
+  html.clean body{
+    background:
+      radial-gradient(60vmax 60vmax at 8% -10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%),
+      radial-gradient(50vmax 50vmax at 100% 30%, color-mix(in srgb, var(--accent-2) 9%, transparent), transparent 60%),
+      var(--paper) fixed;
+    color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:17px;
+  }
+  html.clean h1,html.clean h2,html.clean h3,html.clean h4,html.clean .font-black,html.clean .font-bold{font-family:"Bricolage Grotesque","Trebuchet MS",sans-serif;}
+  html.clean .font-black{font-weight:800;}
+  html.clean main{max-width:880px;}
+  html.clean ::-webkit-scrollbar-thumb{background:var(--line);}
+  html.clean .em{display:none;}
+  html.clean .glass-icon{display:none;}
+  html.clean .glass-icon.badge-art{display:flex;background:none;border:0;box-shadow:none;}
+  html.clean .glass-icon.badge-art::before{display:none;}
+  html.clean .brand-text{background:none;-webkit-text-fill-color:var(--accent);color:var(--accent);}
+
+  /* palette remap of the utility classes */
+  html.clean .text-white{color:var(--ink)!important;}
+  html.clean .text-zinc-300,html.clean .text-zinc-400,html.clean .text-zinc-500,html.clean .text-zinc-600{color:var(--ink-soft)!important;}
+  html.clean .text-pink-400,html.clean .text-orange-300,html.clean .text-red-400,html.clean .text-red-300{color:var(--accent-2)!important;}
+  html.clean .bg-zinc-900{background:var(--paper-2)!important;}
+  html.clean .bg-zinc-800{background:var(--line)!important;}
+  html.clean .bg-black{background:var(--paper)!important;color:var(--ink)!important;}
+  html.clean .bg-white\/5,html.clean .bg-white\/10,html.clean .hover\:bg-white\/5:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)!important;}
+  html.clean .border-zinc-800,html.clean .border-zinc-700,html.clean .border-white\/10{border-color:var(--line)!important;}
+  html.clean .border-red-900{border-color:var(--accent-2)!important;}
+  html.clean .border-pink-500{border-color:var(--accent)!important;}
+  html.clean .divide-zinc-800>:not([hidden])~:not([hidden]){border-color:var(--line)!important;}
+  html.clean .focus\:border-pink-500:focus{border-color:var(--accent)!important;}
+  html.clean input,html.clean select,html.clean textarea{background:var(--paper)!important;color:var(--ink)!important;border-color:var(--line)!important;border-radius:8px!important;font-family:"Newsreader",Georgia,serif;}
+  html.clean input::placeholder{color:var(--ink-soft)!important;opacity:.7;}
+
+  /* quiet cards */
+  html.clean .rounded-2xl.bg-zinc-900,html.clean .glass-card{
+    background:linear-gradient(145deg,color-mix(in srgb,var(--ink) 6%,transparent),color-mix(in srgb,var(--ink) 2%,transparent))!important;
+    border:1px solid var(--line)!important;border-radius:20px!important;
+    box-shadow:0 14px 34px -22px var(--shadow)!important;-webkit-backdrop-filter:none;backdrop-filter:none;
+  }
+  html.clean .card-hover:hover{transform:translateY(-2px);box-shadow:0 18px 40px -20px var(--shadow)!important;}
+  html.clean #onboardCard{background:var(--paper-2)!important;border:1px solid var(--line)!important;}
+  html.clean #greetingCard{display:none;}
+  html.clean #view-nutrition .overflow-x-auto{background:var(--paper-2);border-color:var(--line);}
+  html.clean thead.bg-zinc-900{background:color-mix(in srgb,var(--ink) 7%,transparent)!important;}
+  html.clean thead{font-family:"IBM Plex Mono",monospace;letter-spacing:.1em;}
+
+  /* type: display / serif body / mono labels */
+  html.clean h3{font-size:clamp(1.9rem,6.5vw,2.7rem)!important;line-height:1.04;letter-spacing:-.01em;font-weight:800;margin-bottom:.5rem;text-wrap:balance;}
+  html.clean #view-dashboard h3,html.clean #onboardCard h3{font-family:"IBM Plex Mono",monospace;font-size:.72rem!important;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-2);margin-bottom:.6rem;}
+  html.clean #onboardCard h3{font-family:"Bricolage Grotesque",sans-serif;font-size:1.4rem!important;letter-spacing:-.01em;text-transform:none;color:var(--ink);}
+  html.clean h4{font-weight:700;letter-spacing:-.005em;}
+  html.clean .text-xs,html.clean [class~="text-[11px]"],html.clean [class~="text-[10px]"],html.clean [class~="text-[9px]"],html.clean [class~="text-[8px]"]{font-family:"IBM Plex Mono",ui-monospace,monospace;letter-spacing:.05em;}
+  html.clean label{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.1em;}
+  html.clean .text-3xl,html.clean .text-2xl{font-family:"Bricolage Grotesque",sans-serif;}
+
+  /* buttons: ink CTA, green go, mono caps */
+  html.clean button{font-family:"IBM Plex Mono",ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;transition:transform .15s ease,background .15s ease,opacity .15s ease;}
+  html.clean button:active{transform:scale(.97);}
+  html.clean .brand-btn{background:var(--ink)!important;color:var(--paper)!important;border-radius:6px!important;box-shadow:none;font-size:.78rem;}
+  html.clean .cta{padding:13px 22px;}
+  html.clean #xpBar,html.clean #diaryBar,html.clean #playerProgress,html.clean #bmiBar,html.clean #heroBar{background:var(--accent)!important;border-radius:999px!important;}
+  html.clean #minutesChart .brand-btn{background:var(--accent)!important;border-radius:3px 3px 0 0!important;}
+  html.clean .startBtn{background:var(--accent)!important;color:var(--paper)!important;border-radius:6px!important;font-size:.76rem;}
+  html.clean .toast{background:var(--ink)!important;color:var(--paper)!important;border-radius:8px!important;}
+  html.clean .chip{background:transparent;color:var(--ink-soft);border:1px solid var(--line)!important;border-radius:6px!important;}
+  html.clean .chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink)!important;}
+  html.clean .glass-pill{background:transparent!important;border:1px solid var(--line)!important;color:var(--ink-soft)!important;font-family:"IBM Plex Mono",monospace;letter-spacing:.08em;-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html.clean span.bg-gradient-to-r{background:none!important;border:1px solid var(--line);color:var(--ink-soft)!important;font-family:"IBM Plex Mono",monospace;letter-spacing:.1em;}
+  html.clean .theme-opt{background:transparent;border:1px solid var(--line)!important;text-transform:none;letter-spacing:0;font-family:"Newsreader",serif;}
+  html.clean .theme-opt.selected{border:2px solid var(--accent)!important;background:color-mix(in srgb,var(--accent) 8%,transparent);}
+
+  /* floating glass header + text-only nav */
+  html.clean header{position:sticky;top:10px;max-width:860px;margin:10px auto 0;width:calc(100% - 24px);border:1px solid var(--line)!important;border-radius:999px;padding:.55rem 1rem!important;
+    background:color-mix(in srgb,var(--paper) 80%,transparent)!important;-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 10px 30px -20px var(--shadow);}
+  html.clean header h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:.95rem;letter-spacing:.22em;}
+  html.clean .glass-nav{background:color-mix(in srgb,var(--paper) 82%,transparent);border:1px solid var(--line);border-radius:999px;box-shadow:0 14px 34px -18px var(--shadow);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);}
+  html.clean .glass-nav{gap:0;padding:6px;}
+  html.clean .navbtn{color:var(--ink-soft)!important;font-size:.56rem;letter-spacing:.05em;padding:.6rem .1rem!important;border-radius:999px;flex:1 1 0;min-width:0;justify-content:center;}
+  html.clean .navbtn.active{background:var(--accent);color:var(--paper)!important;}
+
+  /* hero */
+  html.clean .hero-clean{display:block;padding:26px 0 6px;}
+  .hero-clean .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-2);margin-bottom:14px;}
+  .hero-clean h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(2.5rem,10vw,4.1rem);line-height:1.02;letter-spacing:-.015em;text-wrap:balance;margin:0;}
+  .hero-clean h2 em{font-style:normal;color:var(--accent);}
+  .hero-sub{font-family:"Newsreader",serif;font-size:1.08rem;line-height:1.5;color:var(--ink-soft);max-width:34ch;margin-top:18px;}
+  .hero-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;}
+  .hero-cta .note{font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--ink-soft);}
+  .hero-level{margin-top:26px;max-width:340px;}
+  .hero-level .label{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px;}
+  .hero-bar{height:4px;border-radius:999px;background:var(--line);overflow:hidden;}
+  #heroBar{height:100%;width:0;}
+
+  /* dashboard stats: quiet columns, no boxes */
+  html.clean #view-dashboard .grid-cols-3{gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:8px;}
+  html.clean #view-dashboard .grid-cols-3>.glass-card{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;text-align:left;padding:18px 16px!important;}
+  html.clean #view-dashboard .grid-cols-3>.glass-card+.glass-card{border-left:1px solid var(--line)!important;}
+  html.clean #view-dashboard .grid-cols-3 .text-2xl{font-size:2.3rem;line-height:1;font-weight:800;}
+  html.clean #view-dashboard .grid-cols-3 .text-\[11px\]{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.12em;margin-top:6px;}
+  html.clean #challengeCard{background:var(--paper-2)!important;border:1px solid var(--line)!important;}
+  html.clean .view{padding-top:26px;}
+  html.clean #view-dashboard{padding-top:8px;}
+  html.clean button.glass-card{text-transform:none;letter-spacing:0;font-family:"Newsreader",Georgia,serif;}
+  html.clean button.glass-card .font-black{font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem;}
+  html.clean button.glass-card .text-xs{font-family:"Newsreader",serif;font-size:.95rem;letter-spacing:0;}
+  html.clean #categoryChips{scrollbar-width:none;}
+  html.clean #categoryChips::-webkit-scrollbar{display:none;}
+
+  /* player + modals: plain paper */
+  html.clean #playerModal,html.clean #doneModal,html.clean #builderModal{background:var(--paper)!important;color:var(--ink);-webkit-backdrop-filter:none;backdrop-filter:none;}
+  html.clean #playerExercise{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;letter-spacing:-.01em;}
+  html.clean #playerInstructions{font-family:"Newsreader",serif;font-size:1rem;}
+  html.clean #exerciseIcon{background:var(--paper-2);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 40px -24px var(--shadow);}
+  html.clean .photo-placeholder{background:var(--paper-2);}
+  html.clean #playerModal .bg-zinc-800{background:transparent!important;border:1px solid var(--line);color:var(--ink)!important;border-radius:6px!important;}
+  html.clean #playerModal .w-full.h-2.bg-zinc-800{background:var(--line)!important;border:0;border-radius:999px!important;}
+  html.clean .ribbon{background:none;border:0;padding:0;font-size:2.2rem;margin:0 0 6px;}
+  html.clean #doneModal .brand-text{color:var(--accent-2);-webkit-text-fill-color:var(--accent-2);}
 </style>
 </head>
 <body class="min-h-screen">
 
 <!-- HEADER -->
-<header class="sticky top-0 z-40 bg-[#08060d]/90 backdrop-blur border-b border-white/10 p-4 flex justify-between items-center">
-  <h1 class="font-black text-lg tracking-tight">NAIJA <span class="brand-text">FIT</span> FREE 🇳🇬</h1>
+<header class="sticky top-0 z-40 bg-[#060a17]/85 backdrop-blur border-b border-white/10 p-4 flex justify-between items-center">
+  <h1 class="font-black text-lg tracking-tight">NAIJA <span class="brand-text">FIT</span> FREE <span class="em">🇳🇬</span></h1>
   <div id="headerXP" class="glass-pill flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold"></div>
 </header>
 
@@ -96,8 +378,21 @@
 
 <!-- ============ DASHBOARD ============ -->
 <section id="view-dashboard" class="view active p-4 md:p-6 space-y-5">
+  <div id="heroClean" class="hero-clean">
+    <p class="label eyebrow">Home workouts &middot; Nigerian edition</p>
+    <h2 id="heroTitle">Get fit with <em>what you have.</em></h2>
+    <p id="heroSub" class="hero-sub">No gym, no equipment, no excuses. Twenty-three routines with real demo photos and a voice that counts for you.</p>
+    <div class="hero-cta">
+      <button onclick="startHero()" class="brand-btn cta">Start today's workout</button>
+      <span class="note">free &middot; no sign-up</span>
+    </div>
+    <div id="heroLevel" class="hero-level hidden">
+      <div class="label"><span id="heroLevelLabel"></span></div>
+      <div class="hero-bar"><div id="heroBar"></div></div>
+    </div>
+  </div>
   <div id="onboardCard" class="hidden bg-gradient-to-br from-purple-900/40 to-pink-900/20 border border-white/10 rounded-2xl p-5">
-    <h3 class="font-black text-xl mb-1">Welcome! Set up your profile 👋</h3>
+    <h3 class="font-black text-xl mb-1">Welcome! Set up your profile <span class="em">👋</span></h3>
     <p class="text-zinc-400 text-sm mb-4">Takes 10 seconds — personalizes your whole experience.</p>
     <div class="grid grid-cols-2 gap-3 mb-3">
       <input id="obName" placeholder="Your name" class="col-span-2 bg-black border border-zinc-700 rounded-lg px-3 py-2 focus:border-pink-500 outline-none">
@@ -132,30 +427,30 @@
   </div>
 
   <div class="grid grid-cols-3 gap-3">
-    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">💪</span></div><div class="text-2xl font-black" id="dashCount">0</div><div class="text-[11px] text-zinc-400">Workouts</div></div>
-    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">⏱️</span></div><div class="text-2xl font-black" id="dashMinutes">0</div><div class="text-[11px] text-zinc-400">Minutes</div></div>
-    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base">🔥</span></div><div class="text-2xl font-black" id="dashStreak">0</div><div class="text-[11px] text-zinc-400">Day Streak</div></div>
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base em">💪</span></div><div class="text-2xl font-black" id="dashCount">0</div><div class="text-[11px] text-zinc-400">Workouts</div></div>
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base em">⏱️</span></div><div class="text-2xl font-black" id="dashMinutes">0</div><div class="text-[11px] text-zinc-400">Minutes</div></div>
+    <div class="glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:34px;height:34px;border-radius:12px;"><span class="text-base em">🔥</span></div><div class="text-2xl font-black" id="dashStreak">0</div><div class="text-[11px] text-zinc-400">Day Streak</div></div>
   </div>
 
   <div>
-    <h3 class="font-black text-lg mb-2">🔥 Today's Challenge</h3>
+    <h3 class="font-black text-lg mb-2"><span class="em">🔥 </span>Today's Challenge</h3>
     <div id="challengeCard" class="bg-gradient-to-br from-orange-600/30 to-pink-600/20 border border-white/10 rounded-2xl p-5"></div>
   </div>
 
   <div>
-    <h3 class="font-black text-lg mb-2">📅 Today's Plan</h3>
+    <h3 class="font-black text-lg mb-2"><span class="em">📅 </span>Today's Plan</h3>
     <div id="todayPlanCard" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
   </div>
 
   <div>
-    <h3 class="font-black text-lg mb-2">🏅 Recent Badges</h3>
+    <h3 class="font-black text-lg mb-2"><span class="em">🏅 </span>Recent Badges</h3>
     <div id="dashBadges" class="flex gap-3 overflow-x-auto pb-2"></div>
   </div>
 </section>
 
 <!-- ============ WORKOUTS ============ -->
 <section id="view-workouts" class="view p-4 md:p-6">
-  <h3 class="text-2xl md:text-3xl font-black mb-1">WORKOUT LIBRARY</h3>
+  <h3 class="text-2xl md:text-3xl font-black mb-1">Workout library</h3>
   <p class="text-zinc-500 mb-4 text-sm">Filter by muscle group, difficulty, duration — or build your own.</p>
   <button onclick="openBuilder()" class="glass-card w-full rounded-2xl p-4 mb-4 flex items-center gap-3 text-left">
     <span class="glass-icon flex-shrink-0" style="width:44px;height:44px;border-radius:15px;"><span class="text-xl">⭐</span></span>
@@ -184,7 +479,7 @@
 
 <!-- ============ PLAN ============ -->
 <section id="view-plan" class="view p-4 md:p-6">
-  <h3 class="text-2xl md:text-3xl font-black mb-1">WEEKLY PLAN</h3>
+  <h3 class="text-2xl md:text-3xl font-black mb-1">Weekly plan</h3>
   <p class="text-zinc-500 mb-5 text-sm">Assign a workout (or rest) to each day. Shows on your dashboard.</p>
   <div id="planGrid" class="space-y-3"></div>
   <button onclick="savePlan()" class="mt-5 w-full brand-btn text-white py-3 rounded-full font-black">SAVE PLAN</button>
@@ -192,11 +487,11 @@
 
 <!-- ============ NUTRITION ============ -->
 <section id="view-nutrition" class="view p-4 md:p-6 space-y-8">
-  <h3 class="text-2xl md:text-3xl font-black">NUTRITION</h3>
+  <h3 class="text-2xl md:text-3xl font-black">Nutrition</h3>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-      <h4 class="font-bold text-lg mb-4">⚖️ BMI Calculator</h4>
+      <h4 class="font-bold text-lg mb-4"><span class="em">⚖️ </span>BMI Calculator</h4>
       <div class="grid grid-cols-2 gap-3 mb-3">
         <div><label class="text-xs text-zinc-500">Height (cm)</label><input id="bmiHeight" type="number" placeholder="170" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
         <div><label class="text-xs text-zinc-500">Weight (kg)</label><input id="bmiWeight" type="number" placeholder="70" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
@@ -210,7 +505,7 @@
     </div>
 
     <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-      <h4 class="font-bold text-lg mb-4">🔥 Daily Calorie Calculator</h4>
+      <h4 class="font-bold text-lg mb-4"><span class="em">🔥 </span>Daily Calorie Calculator</h4>
       <div class="grid grid-cols-2 gap-3 mb-3">
         <div><label class="text-xs text-zinc-500">Age</label><input id="calAge" type="number" placeholder="25" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"></div>
         <div><label class="text-xs text-zinc-500">Gender</label><select id="calGender" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-pink-500 outline-none"><option value="male">Male</option><option value="female">Female</option></select></div>
@@ -234,7 +529,7 @@
 
   <div>
     <div class="flex justify-between items-center mb-3">
-      <h4 class="font-black text-lg">🍽️ Today's Meal Diary</h4>
+      <h4 class="font-black text-lg"><span class="em">🍽️ </span>Today's Meal Diary</h4>
       <div class="text-right">
         <div class="text-xs text-zinc-500">Target</div>
         <input id="targetCalories" type="number" placeholder="2200" class="w-24 bg-black border border-zinc-700 rounded-lg px-2 py-1 text-right text-sm focus:border-pink-500 outline-none">
@@ -249,9 +544,9 @@
       <div class="flex flex-col items-center justify-center">
         <div class="relative w-32 h-32 rounded-full" id="macroDonut"></div>
         <div class="flex gap-3 mt-3 text-[11px]">
-          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span>Protein</span>
-          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-pink-500"></span>Carbs</span>
-          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span>Fat</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:var(--chart-p)"></span>Protein</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:var(--chart-c)"></span>Carbs</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full" style="background:var(--chart-f)"></span>Fat</span>
         </div>
       </div>
     </div>
@@ -259,7 +554,7 @@
 
   <div>
     <div class="flex justify-between items-center mb-2">
-      <h4 class="font-black text-lg">🇳🇬 Naija Food Database</h4>
+      <h4 class="font-black text-lg"><span class="em">🇳🇬 </span>Naija Food Database</h4>
       <input id="foodSearch" placeholder="Search food..." class="bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm w-40 focus:border-pink-500 outline-none">
     </div>
     <div class="overflow-x-auto rounded-2xl border border-zinc-800">
@@ -275,10 +570,10 @@
 
 <!-- ============ PROGRESS ============ -->
 <section id="view-progress" class="view p-4 md:p-6 space-y-8">
-  <h3 class="text-2xl md:text-3xl font-black">YOUR PROGRESS</h3>
+  <h3 class="text-2xl md:text-3xl font-black">Your progress</h3>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-    <h4 class="font-bold mb-3">⚖️ Weight Log</h4>
+    <h4 class="font-bold mb-3"><span class="em">⚖️ </span>Weight Log</h4>
     <div class="flex gap-2 mb-4">
       <input id="weightLogInput" type="number" placeholder="Weight (kg)" class="flex-1 bg-black border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:border-pink-500 outline-none">
       <button onclick="addWeightLog()" class="brand-btn text-white px-4 rounded-lg font-bold text-sm">LOG</button>
@@ -287,23 +582,23 @@
   </div>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-    <h4 class="font-bold mb-3">📊 Minutes (Last 14 Days)</h4>
+    <h4 class="font-bold mb-3"><span class="em">📊 </span>Minutes (Last 14 Days)</h4>
     <div id="minutesChart" class="flex items-end gap-1 h-28"></div>
   </div>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-    <h4 class="font-bold mb-3">🗓️ Activity Heatmap</h4>
+    <h4 class="font-bold mb-3"><span class="em">🗓️ </span>Activity Heatmap</h4>
     <div id="heatmap" class="grid grid-flow-col grid-rows-7 gap-1"></div>
   </div>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-    <h4 class="font-bold mb-3">🏅 All Badges</h4>
+    <h4 class="font-bold mb-3"><span class="em">🏅 </span>All Badges</h4>
     <div id="badgeGrid" class="grid grid-cols-3 sm:grid-cols-5 gap-3"></div>
   </div>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
     <div class="flex justify-between items-center mb-3">
-      <h4 class="font-bold">🕒 Workout History</h4>
+      <h4 class="font-bold"><span class="em">🕒 </span>Workout History</h4>
       <button onclick="clearHistory()" class="text-xs text-zinc-500 underline hover:text-red-400">Clear</button>
     </div>
     <div id="historyList" class="space-y-2"></div>
@@ -312,7 +607,7 @@
 
 <!-- ============ PROFILE ============ -->
 <section id="view-profile" class="view p-4 md:p-6 space-y-5">
-  <h3 class="text-2xl md:text-3xl font-black mb-4">PROFILE</h3>
+  <h3 class="text-2xl md:text-3xl font-black mb-4">Profile</h3>
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4">
     <div>
       <label class="text-xs text-zinc-500">Name</label>
@@ -332,6 +627,23 @@
       </select>
     </div>
     <button onclick="saveProfile()" class="w-full brand-btn text-white py-3 rounded-full font-black">SAVE PROFILE</button>
+  </div>
+  <div class="glass-card rounded-2xl p-5">
+    <div class="font-black mb-3">🎨 Theme</div>
+    <div class="grid grid-cols-3 gap-3" id="themePicker">
+      <button data-theme="clean" class="theme-opt rounded-2xl p-3 text-left border-2 border-transparent">
+        <span class="flex gap-1 mb-2"><span class="w-5 h-5 rounded-full" style="background:#1D4ED8"></span><span class="w-5 h-5 rounded-full" style="background:#FBF6EA;box-shadow:inset 0 0 0 1px #0003"></span><span class="w-5 h-5 rounded-full" style="background:#B45309"></span></span>
+        <span class="block text-sm font-black">Clean</span><span class="block text-[11px] opacity-70">Light or dark, auto</span>
+      </button>
+      <button data-theme="dark" class="theme-opt rounded-2xl p-3 text-left border-2 border-transparent">
+        <span class="flex gap-1 mb-2"><span class="w-5 h-5 rounded-full" style="background:#22d3ee"></span><span class="w-5 h-5 rounded-full" style="background:#60a5fa"></span><span class="w-5 h-5 rounded-full" style="background:#a78bfa"></span></span>
+        <span class="block text-sm font-black">Liquid Glass</span><span class="block text-[11px] opacity-70">Aurora, dark</span>
+      </button>
+      <button data-theme="flip7" class="theme-opt rounded-2xl p-3 text-left border-2 border-transparent">
+        <span class="flex gap-1 mb-2"><span class="w-5 h-5 rounded-full" style="background:#2BA8A2"></span><span class="w-5 h-5 rounded-full" style="background:#FFD23F"></span><span class="w-5 h-5 rounded-full" style="background:#EF6C4A"></span></span>
+        <span class="block text-sm font-black">Flip7</span><span class="block text-[11px] opacity-70">Teal &amp; gold</span>
+      </button>
+    </div>
   </div>
   <div id="installCard" class="glass-card rounded-2xl p-5">
     <div class="flex items-center gap-3">
@@ -398,10 +710,10 @@
       <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#a855f7"/><stop offset="50%" stop-color="#ec4899"/><stop offset="100%" stop-color="#f97316"/>
+            <stop offset="0%" style="stop-color:var(--ring1)"/><stop offset="50%" style="stop-color:var(--ring2)"/><stop offset="100%" style="stop-color:var(--ring3)"/>
           </linearGradient>
         </defs>
-        <circle cx="50" cy="50" r="45" fill="none" stroke="#27272a" stroke-width="8"/>
+        <circle cx="50" cy="50" r="45" fill="none" style="stroke:var(--ring-track)" stroke-width="8"/>
         <circle id="playerRing" cx="50" cy="50" r="45" fill="none" stroke="url(#ringGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/>
       </svg>
       <div class="absolute text-5xl font-black" id="playerTimer">30</div>
@@ -420,7 +732,7 @@
 <!-- DONE MODAL -->
 <div id="doneModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6 text-center">
   <div class="text-6xl mb-4">🎉</div>
-  <h2 class="text-3xl font-black mb-2">WORKOUT COMPLETE!</h2>
+  <h2 class="ribbon text-3xl font-black mb-3">WORKOUT COMPLETE!</h2>
   <p class="text-zinc-400 mb-2" id="doneSummary"></p>
   <p class="brand-text font-black text-lg mb-8" id="doneXP"></p>
   <button onclick="closeDone()" class="brand-btn text-white px-8 py-3 rounded-full font-bold">DONE</button>
@@ -441,6 +753,7 @@ const categories = {
   mobility:{label:'Mobility', emoji:'🧘', grad:'from-emerald-400 to-teal-500'},
   custom:{label:'My Workouts', emoji:'⭐', grad:'from-amber-300 to-yellow-500'}
 };
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const baseWorkouts = [
@@ -518,7 +831,7 @@ const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const LS = {
   profile:'naijaFitProfile', history:'naijaFitHistory', xp:'naijaFitXP', badges:'naijaFitBadges',
   weight:'naijaFitWeightLog', meals:'naijaFitMealLog', plan:'naijaFitPlan', target:'naijaFitTargetCalories',
-  voice:'naijaFitVoiceEnabled', custom:'naijaFitCustomWorkouts'
+  voice:'naijaFitVoiceEnabled', custom:'naijaFitCustomWorkouts', theme:'naijaFitTheme'
 };
 const load = (k, d) => { try{ const v = JSON.parse(localStorage.getItem(k)); return v===null||v===undefined ? d : v; }catch(e){ return d; } };
 const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
@@ -644,6 +957,8 @@ function showToast(msg){
 }
 
 /* ================= DASHBOARD ================= */
+let heroWorkoutId = null;
+function startHero(){ if(heroWorkoutId) startWorkout(heroWorkoutId); }
 function renderDashboard(){
   const p = load(LS.profile, null);
   document.getElementById('onboardCard').classList.toggle('hidden', !!p);
@@ -659,6 +974,11 @@ function renderDashboard(){
   document.getElementById('levelLabel').textContent = `Level ${li.lvl}`;
   document.getElementById('xpLabel').textContent = `${li.into} / 200 XP`;
   document.getElementById('xpBar').style.width = li.pct+'%';
+  const heroLvl = document.getElementById('heroLevel');
+  heroLvl.classList.toggle('hidden', !p);
+  document.getElementById('heroLevelLabel').textContent = `Level ${li.lvl} · ${li.into} / 200 XP`;
+  document.getElementById('heroBar').style.width = li.pct+'%';
+  document.getElementById('heroTitle').innerHTML = p ? `Welcome back, <em>${esc(p.name)}.</em>` : 'Get fit with <em>what you have.</em>';
   document.getElementById('headerXP').innerHTML = `<span>⭐ Lvl ${li.lvl}</span>`;
 
   const stats = computeStats();
@@ -671,10 +991,10 @@ function renderDashboard(){
   const cat = categories[challenge.cat];
   document.getElementById('challengeCard').innerHTML = `
     <div class="flex items-center gap-3">
-      <div class="glass-icon flex-shrink-0" style="width:52px;height:52px;border-radius:18px;"><span class="text-2xl">${cat.emoji}</span></div>
+      <div class="glass-icon flex-shrink-0" style="width:52px;height:52px;border-radius:18px;"><span class="text-2xl em">${cat.emoji}</span></div>
       <div class="flex-1 min-w-0">
         <div class="text-xs text-orange-300 font-bold uppercase mb-1">${cat.label} • ${challenge.diff}</div>
-        <div class="font-black text-xl truncate">${challenge.name}</div>
+        <div class="font-black text-xl leading-tight">${challenge.name}</div>
         <div class="text-zinc-400 text-sm mt-1">${challenge.mins} mins • Bonus XP for completing today's pick!</div>
       </div>
       <button onclick="startWorkout('${challenge.id}')" class="brand-btn text-white px-5 py-2.5 rounded-full font-bold whitespace-nowrap flex-shrink-0">START</button>
@@ -682,6 +1002,7 @@ function renderDashboard(){
 
   const plan = load(LS.plan, null);
   const todayName = days[new Date().getDay()];
+  heroWorkoutId = (plan && plan[todayName] && plan[todayName]!=='rest' && workouts.some(w=>w.id===plan[todayName])) ? plan[todayName] : challenge.id;
   const planCard = document.getElementById('todayPlanCard');
   if(!plan){
     planCard.innerHTML = `<p class="text-zinc-400 text-sm mb-3">You haven't built a weekly plan yet.</p><button onclick="showView('plan')" class="brand-btn text-white px-5 py-2 rounded-full font-bold text-sm">Build My Plan</button>`;
@@ -706,7 +1027,7 @@ function renderDashboard(){
   } else {
     badgeStrip.innerHTML = earned.slice(-6).reverse().map(id=>{
       const b = badgeDefs.find(x=>x.id===id);
-      return `<div class="flex-shrink-0 w-20 glass-card rounded-2xl p-3 text-center"><div class="glass-icon mx-auto mb-1" style="width:36px;height:36px;border-radius:12px;"><span class="text-lg">${b.emoji}</span></div><div class="text-[10px] text-zinc-400">${b.name}</div></div>`;
+      return `<div class="flex-shrink-0 w-20 glass-card rounded-2xl p-3 text-center"><div class="glass-icon badge-art mx-auto mb-1" style="width:36px;height:36px;border-radius:12px;"><span class="text-lg">${b.emoji}</span></div><div class="text-[10px] text-zinc-400">${b.name}</div></div>`;
     }).join('');
   }
 }
@@ -716,7 +1037,7 @@ let activeCategory = 'all';
 function renderCategoryChips(){
   const wrap = document.getElementById('categoryChips');
   const all = [{key:'all', label:'All', emoji:'✨'}, ...Object.entries(categories).map(([key,c])=>({key, label:c.label, emoji:c.emoji}))];
-  wrap.innerHTML = all.map(c=>`<button class="chip flex-shrink-0 border border-zinc-700 rounded-full px-4 py-2 text-xs font-bold ${c.key===activeCategory?'active':''}" data-cat="${c.key}">${c.emoji} ${c.label}</button>`).join('');
+  wrap.innerHTML = all.map(c=>`<button class="chip flex-shrink-0 border border-zinc-700 rounded-full px-4 py-2 text-xs font-bold ${c.key===activeCategory?'active':''}" data-cat="${c.key}"><span class="em">${c.emoji} </span>${c.label}</button>`).join('');
   wrap.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ activeCategory = btn.dataset.cat; renderCategoryChips(); renderWorkoutGrid(); }));
 }
 function renderWorkoutGrid(){
@@ -743,7 +1064,7 @@ function renderWorkoutGrid(){
     return `
     <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 card-hover">
       <div class="flex justify-between items-start mb-2">
-        <div class="text-3xl">${c.emoji}</div>
+        <div class="text-3xl em">${c.emoji}</div>
         <span class="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-gradient-to-r ${c.grad} text-black">${w.diff}</span>
       </div>
       <h4 class="font-bold text-lg">${esc(w.name)}</h4>
@@ -1107,7 +1428,7 @@ function finishWorkout(){
 function closeDone(){ document.getElementById('doneModal').classList.add('hidden'); renderDashboard(); }
 
 function launchConfetti(){
-  const colors=['#a855f7','#ec4899','#f97316','#ffffff'];
+  const colors=[1,2,3,4].map(i=>cssVar('--confetti'+i));
   for(let i=0;i<60;i++){
     const c = document.createElement('div');
     c.className='confetti';
@@ -1275,11 +1596,11 @@ function renderDiary(){
   const pCal=totalP*4, cCal=totalC*4, fCal=totalF*9, macroTotal = pCal+cCal+fCal;
   const donut = document.getElementById('macroDonut');
   if(macroTotal===0){
-    donut.style.background = '#27272a';
+    donut.style.background = cssVar('--chart-track');
   } else {
     const p1 = (pCal/macroTotal)*100;
     const p2 = p1 + (cCal/macroTotal)*100;
-    donut.style.background = `conic-gradient(#a855f7 0% ${p1}%, #ec4899 ${p1}% ${p2}%, #f97316 ${p2}% 100%)`;
+    donut.style.background = `conic-gradient(${cssVar('--chart-p')} 0% ${p1}%, ${cssVar('--chart-c')} ${p1}% ${p2}%, ${cssVar('--chart-f')} ${p2}% 100%)`;
   }
 }
 
@@ -1307,11 +1628,11 @@ function renderProgress(){
       const y = 95 - ((l.weight-min)/(max-min))*90;
       return `${x},${y}`;
     }).join(' ');
-    svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#ec4899" stroke-width="2"/>` +
+    svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="${cssVar('--chart-line')}" stroke-width="2"/>` +
       log.map((l,i)=>{
         const x = (i/(log.length-1))*290+5;
         const y = 95 - ((l.weight-min)/(max-min))*90;
-        return `<circle cx="${x}" cy="${y}" r="3" fill="#a855f7"/>`;
+        return `<circle cx="${x}" cy="${y}" r="3" fill="${cssVar('--chart-dot')}"/>`;
       }).join('');
   }
 
@@ -1337,7 +1658,7 @@ function renderProgress(){
     const d = new Date(); d.setDate(d.getDate()-i);
     const key = d.toISOString().slice(0,10);
     const c = countByDay[key]||0;
-    const bg = c===0?'#27272a':c===1?'#7e22ce':c===2?'#a855f7':'#ec4899';
+    const bg = cssVar('--heat'+Math.min(c,3));
     cells.push(`<div class="heat-cell" style="background:${bg}" title="${key}: ${c} workout(s)"></div>`);
   }
   heat.innerHTML = cells.join('');
@@ -1366,6 +1687,34 @@ function clearHistory(){
     renderDashboard();
   }
 }
+
+/* ================= THEMES ================= */
+function currentTheme(){
+  const c = document.documentElement.classList;
+  return c.contains('clean') ? 'clean' : c.contains('flip7') ? 'flip7' : 'dark';
+}
+function themeColor(name){
+  if(name==='flip7') return '#2BA8A2';
+  if(name==='clean') return matchMedia('(prefers-color-scheme:dark)').matches ? '#131009' : '#FBF6EA';
+  return '#060a17';
+}
+function markThemePicker(){
+  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('selected', b.dataset.theme===currentTheme()));
+}
+function setTheme(name){
+  document.documentElement.classList.toggle('flip7', name==='flip7');
+  document.documentElement.classList.toggle('clean', name==='clean');
+  save(LS.theme, name);
+  document.querySelector('meta[name=theme-color]').content = themeColor(name);
+  markThemePicker();
+  const active = document.querySelector('.view.active');
+  if(active) showView(active.id.replace('view-',''));
+}
+document.getElementById('themePicker').addEventListener('click', e=>{
+  const b = e.target.closest('.theme-opt');
+  if(b) setTheme(b.dataset.theme);
+});
+markThemePicker();
 
 /* ================= PWA: OFFLINE + INSTALL ================= */
 let deferredInstall = null;
