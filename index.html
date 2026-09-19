@@ -364,6 +364,30 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
   html.clean #playerModal .w-full.h-2.bg-zinc-800{background:var(--line)!important;border:0;border-radius:999px!important;}
   html.clean .ribbon{background:none;border:0;padding:0;font-size:2.2rem;margin:0 0 6px;}
   html.clean #doneModal .brand-text{color:var(--accent-2);-webkit-text-fill-color:var(--accent-2);}
+  #categoryChips,#mealPlanChips{scrollbar-width:none;}
+  #categoryChips::-webkit-scrollbar,#mealPlanChips::-webkit-scrollbar{display:none;}
+  /* short phones: keep the player controls on screen */
+  @media (max-height:720px){
+    #exerciseIcon{max-width:21vh!important;}
+    #playerRingBox{width:16vh!important;height:16vh!important;margin-bottom:.6rem!important;}
+    #playerRingBox #playerTimer{font-size:2.2rem;}
+    #zoomHint{display:none;}
+    #playerInstructions{font-size:.78rem;min-height:0!important;margin-bottom:.6rem!important;}
+    #playerModal h2{font-size:1.6rem!important;margin-bottom:.25rem!important;}
+    #playerModal .text-3xl{font-size:1.6rem;}
+  }
+  /* challenge day grid */
+  .ch-day{display:flex;align-items:center;justify-content:center;height:26px;border-radius:7px;font-size:10px;border:1px solid rgba(148,170,230,.25);color:#94a3b8;}
+  .ch-day.done{background:linear-gradient(135deg,#22d3ee,#60a5fa);color:#04122b;border-color:transparent;font-weight:800;}
+  .ch-day.cur{border:2px solid #67e8f9;color:#fff;}
+  html.flip7 .ch-day{border-color:var(--f-line);color:var(--f-muted);}
+  html.flip7 .ch-day.done{background:var(--f-teal);color:#fff;}
+  html.flip7 .ch-day.cur{border-color:var(--f-gold-d);color:var(--f-ink);}
+  html.clean .ch-day{border-color:var(--line);color:var(--ink-soft);}
+  html.clean .ch-day.done{background:var(--accent);color:var(--paper);}
+  html.clean .ch-day.cur{border-color:var(--accent);color:var(--ink);}
+  html.flip7 #waterBar{background:linear-gradient(90deg,var(--f-teal),var(--f-teal-l))!important;}
+  html.clean #waterBar{background:var(--accent)!important;border-radius:999px!important;}
 </style>
 </head>
 <body class="min-h-screen">
@@ -438,8 +462,18 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
   </div>
 
   <div>
+    <h3 class="font-black text-lg mb-2"><span class="em">🏆 </span>30-day challenge</h3>
+    <div id="challengeDash" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
+  </div>
+
+  <div>
     <h3 class="font-black text-lg mb-2"><span class="em">📅 </span>Today's Plan</h3>
     <div id="todayPlanCard" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
+  </div>
+
+  <div>
+    <h3 class="font-black text-lg mb-2"><span class="em">💧 </span>Water</h3>
+    <div id="waterCard" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
   </div>
 
   <div>
@@ -479,8 +513,10 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
 
 <!-- ============ PLAN ============ -->
 <section id="view-plan" class="view p-4 md:p-6">
-  <h3 class="text-2xl md:text-3xl font-black mb-1">Weekly plan</h3>
-  <p class="text-zinc-500 mb-5 text-sm">Assign a workout (or rest) to each day. Shows on your dashboard.</p>
+  <h3 class="text-2xl md:text-3xl font-black mb-4">Plan</h3>
+  <div id="challengeSection" class="mb-8"></div>
+  <h4 class="font-black text-lg mb-1">Your week</h4>
+  <p class="text-zinc-500 mb-4 text-sm">Assign a workout (or rest) to each day. Shows on your dashboard.</p>
   <div id="planGrid" class="space-y-3"></div>
   <button onclick="savePlan()" class="mt-5 w-full brand-btn text-white py-3 rounded-full font-black">SAVE PLAN</button>
 </section>
@@ -550,6 +586,13 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
         </div>
       </div>
     </div>
+  </div>
+
+  <div>
+    <h4 class="font-black text-lg mb-1"><span class="em">🥘 </span>Naija meal plans</h4>
+    <p class="text-xs text-zinc-400 mb-3">One-tap days built from the foods below. Log the whole day or set its calories as your target.</p>
+    <div id="mealPlanChips" class="flex gap-2 overflow-x-auto pb-2 mb-2"></div>
+    <div id="mealPlanBody" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"></div>
   </div>
 
   <div>
@@ -651,6 +694,24 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
     </div>
   </div>
   <div class="glass-card rounded-2xl p-5">
+    <div class="font-black mb-3">⏱️ Workout timing</div>
+    <div class="grid grid-cols-3 gap-3">
+      <div><label class="text-xs text-zinc-500">Work (sec)</label><select id="setWork" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-2 py-2 text-sm focus:border-pink-500 outline-none"></select></div>
+      <div><label class="text-xs text-zinc-500">Rest (sec)</label><select id="setRest" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-2 py-2 text-sm focus:border-pink-500 outline-none"></select></div>
+      <div><label class="text-xs text-zinc-500">Get ready</label><select id="setPrep" class="w-full mt-1 bg-black border border-zinc-700 rounded-lg px-2 py-2 text-sm focus:border-pink-500 outline-none"></select></div>
+    </div>
+    <p class="text-xs text-zinc-400 mt-3">Applies to every workout you start.</p>
+  </div>
+  <div class="glass-card rounded-2xl p-5">
+    <div class="font-black mb-3">🔔 Reminders</div>
+    <div class="flex items-center gap-3 mb-3">
+      <label class="flex items-center gap-2 text-sm"><input id="remOn" type="checkbox" class="w-5 h-5"> Remind me daily</label>
+      <input id="remTime" type="time" class="ml-auto bg-black border border-zinc-700 rounded-lg px-2 py-1.5 text-sm focus:border-pink-500 outline-none">
+    </div>
+    <button onclick="downloadReminderIcs()" class="glass-pill w-full py-2.5 rounded-full font-black text-sm">ADD DAILY REMINDER TO MY CALENDAR</button>
+    <p class="text-xs text-zinc-400 mt-3">A phone browser can only alert you while Naija Fit is open or installed. For a reminder that always rings, add it to your calendar.</p>
+  </div>
+  <div class="glass-card rounded-2xl p-5">
     <div class="font-black mb-1">💾 Your data</div>
     <p class="text-xs text-zinc-400 mb-3">Everything is saved on this device only. Download a backup before you clear your browser or switch phones, then restore it on the new one.</p>
     <div class="grid grid-cols-2 gap-3">
@@ -710,17 +771,18 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
 </div>
 
 <!-- WORKOUT PLAYER MODAL -->
-<div id="playerModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center justify-center p-6">
+<div id="playerModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col items-center overflow-y-auto p-4">
   <button onclick="toggleVoice()" id="voiceToggleBtn" class="absolute top-6 left-6 text-2xl leading-none">🔊</button>
   <button onclick="closePlayer()" class="absolute top-6 right-6 text-zinc-500 hover:text-white text-3xl leading-none">&times;</button>
-  <div class="w-full max-w-sm text-center">
+  <div class="w-full max-w-sm text-center my-auto pt-8">
     <p id="playerWorkoutName" class="brand-text font-black tracking-widest text-xs uppercase mb-2"></p>
-    <div id="exerciseIcon" class="relative w-full aspect-square max-w-[260px] mx-auto mb-3 bg-white/5 border border-white/10 rounded-2xl overflow-hidden"></div>
+    <div id="exerciseIcon" onclick="openZoom()" title="Tap to zoom" class="relative w-full aspect-square max-w-[min(260px,30vh)] mx-auto mb-3 bg-white/5 border border-white/10 rounded-2xl overflow-hidden cursor-zoom-in"></div>
+    <p id="zoomHint" class="text-[10px] text-zinc-500 -mt-2 mb-2">Tap the photo to zoom</p>
     <p id="playerPhase" class="text-sm text-zinc-500 mb-1"></p>
     <h2 id="playerExercise" class="text-3xl font-black mb-2">Get Ready</h2>
-    <p id="playerInstructions" class="text-zinc-400 text-sm leading-snug mb-6 min-h-[2.5rem] px-2"></p>
+    <p id="playerInstructions" class="text-zinc-400 text-sm leading-snug mb-4 min-h-[2.5rem] px-2"></p>
 
-    <div class="relative w-48 h-48 mx-auto mb-6 flex items-center justify-center">
+    <div id="playerRingBox" class="relative w-[min(12rem,22vh)] h-[min(12rem,22vh)] mx-auto mb-4 flex items-center justify-center">
       <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -733,14 +795,22 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
       <div class="absolute text-5xl font-black" id="playerTimer">30</div>
     </div>
 
-    <div class="w-full h-2 bg-zinc-800 rounded-full mb-6 overflow-hidden"><div id="playerProgress" class="h-full brand-btn" style="width:0%"></div></div>
-    <p class="text-xs text-zinc-500 mb-6" id="playerStepCount"></p>
+    <div class="w-full h-2 bg-zinc-800 rounded-full mb-4 overflow-hidden"><div id="playerProgress" class="h-full brand-btn" style="width:0%"></div></div>
+    <p class="text-xs text-zinc-500 mb-4" id="playerStepCount"></p>
 
     <div class="flex gap-3">
       <button onclick="togglePause()" id="pauseBtn" class="flex-1 bg-zinc-800 text-white py-3 rounded-full font-bold">PAUSE</button>
       <button onclick="skipStep()" class="flex-1 brand-btn text-white py-3 rounded-full font-bold">NEXT</button>
     </div>
+    <button id="easierBtn" onclick="swapEasier()" class="hidden mt-3 w-full glass-pill py-2.5 rounded-full text-xs font-bold"></button>
   </div>
+</div>
+
+<!-- PHOTO ZOOM -->
+<div id="zoomModal" class="fixed inset-0 z-[70] hidden bg-black flex flex-col items-center justify-center p-3" onclick="zoomTap(event)">
+  <button class="absolute top-4 right-4 text-white text-4xl leading-none" aria-label="Close" onclick="closeZoom()">&times;</button>
+  <img id="zoomImg" alt="" class="max-w-full max-h-[80vh] rounded-xl object-contain">
+  <p id="zoomCaption" class="text-white text-sm mt-4 text-center"></p>
 </div>
 
 <!-- DONE MODAL -->
@@ -839,6 +909,8 @@ const badgeDefs = [
   {id:'weight_logger', name:'Data Driven', emoji:'📊', desc:'Log your weight 5 times', cond:s=>s.weightLogs>=5},
   {id:'meal_logger', name:'Food Tracker', emoji:'🍲', desc:'Log 10 meals', cond:s=>s.mealLogs>=10},
   {id:'plan_master', name:'Plan Master', emoji:'🗓️', desc:'Build a full weekly plan', cond:s=>s.planComplete},
+  {id:'challenge_champ', name:'Challenge Champion', emoji:'🏆', desc:'Finish a 30-day challenge', cond:s=>s.challengesDone>=1},
+  {id:'hydrated', name:'Hydrated', emoji:'💧', desc:'Drink 8 glasses in a day', cond:s=>s.hydrated},
 ];
 
 const avatars = ['💪','🏃','🥗','🔥','⚡','🦁','🐆','👑'];
@@ -848,11 +920,14 @@ const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const LS = {
   profile:'naijaFitProfile', history:'naijaFitHistory', xp:'naijaFitXP', badges:'naijaFitBadges',
   weight:'naijaFitWeightLog', meals:'naijaFitMealLog', plan:'naijaFitPlan', target:'naijaFitTargetCalories',
-  voice:'naijaFitVoiceEnabled', custom:'naijaFitCustomWorkouts', theme:'naijaFitTheme'
+  voice:'naijaFitVoiceEnabled', custom:'naijaFitCustomWorkouts', theme:'naijaFitTheme',
+  settings:'naijaFitSettings', challenge:'naijaFitChallenge', water:'naijaFitWater', reminder:'naijaFitReminder'
 };
 const load = (k, d) => { try{ const v = JSON.parse(localStorage.getItem(k)); return v===null||v===undefined ? d : v; }catch(e){ return d; } };
 const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-const todayStr = () => new Date().toISOString().slice(0,10);
+const localDay = (d=new Date()) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const todayStr = () => localDay();
+const $id = id => document.getElementById(id);
 
 let workouts = baseWorkouts.slice();
 function refreshWorkouts(){
@@ -868,7 +943,7 @@ function showView(name){
   window.scrollTo({top:0});
   if(name==='dashboard') renderDashboard();
   if(name==='workouts') renderWorkoutGrid();
-  if(name==='plan') renderPlanGrid();
+  if(name==='plan'){ renderChallenges(); renderPlanGrid(); }
   if(name==='nutrition') renderNutrition();
   if(name==='progress') renderProgress();
   if(name==='profile') renderProfileForm();
@@ -898,6 +973,8 @@ function saveOnboarding(){
   renderDashboard();
 }
 function renderProfileForm(){
+  renderSettingsForm();
+  renderReminderForm();
   const p = load(LS.profile, null);
   document.getElementById('profName').value = p ? p.name : '';
   document.getElementById('profGoal').value = p ? p.goal : 'fit';
@@ -952,7 +1029,9 @@ function computeStats(){
     nightOwl: history.some(h=>new Date(h.date).getHours()>=21),
     weightLogs: weightLog.length,
     mealLogs: mealCount,
-    planComplete: !!plan && days.every(d=>plan[d]!==undefined)
+    planComplete: !!plan && days.every(d=>plan[d]!==undefined),
+    challengesDone: ((load(LS.challenge,null)||{}).completed||[]).length,
+    hydrated: Object.values(load(LS.water,{})).some(n=>n>=WATER_GOAL)
   };
 }
 function checkBadges(){
@@ -1019,7 +1098,10 @@ function renderDashboard(){
 
   const plan = load(LS.plan, null);
   const todayName = days[new Date().getDay()];
-  heroWorkoutId = (plan && plan[todayName] && plan[todayName]!=='rest' && workouts.some(w=>w.id===plan[todayName])) ? plan[todayName] : challenge.id;
+  const chToday = challengeToday();
+  heroWorkoutId = chToday ? chToday.workout.id : (plan && plan[todayName] && plan[todayName]!=='rest' && workouts.some(w=>w.id===plan[todayName])) ? plan[todayName] : challenge.id;
+  renderChallengeDash();
+  renderWater();
   const planCard = document.getElementById('todayPlanCard');
   if(!plan){
     planCard.innerHTML = `<p class="text-zinc-400 text-sm mb-3">You haven't built a weekly plan yet.</p><button onclick="showView('plan')" class="brand-btn text-white px-5 py-2 rounded-full font-bold text-sm">Build My Plan</button>`;
@@ -1371,12 +1453,16 @@ function renderExercisePhoto(name){
 
 /* ================= WORKOUT PLAYER ================= */
 let currentWorkout=null, currentStepIndex=0, timeLeft=30, isRest=false, timerInterval=null, isPaused=false;
-const WORK_TIME=30, REST_TIME=10;
+let WORK_TIME=30, REST_TIME=10, PREP_TIME=0;
+let isPrep=false, prepPending=false, stepTotal=30, wakeLock=null, zoomIdx=0, zoomPaused=false;
 
 function startWorkout(id){
   unlockAudio();
   updateVoiceBtn();
-  currentWorkout = workouts.find(w=>w.id===id);
+  const found = workouts.find(w=>w.id===id);
+  currentWorkout = {...found, exercises: found.exercises.slice()};
+  prepPending = PREP_TIME>0;
+  keepAwake(true);
   currentStepIndex = 0;
   isRest = false;
   isPaused = false;
@@ -1389,14 +1475,17 @@ function runStep(){
   clearInterval(timerInterval);
   const ex = currentWorkout.exercises[currentStepIndex];
   isRest = ex.toLowerCase()==='rest';
-  timeLeft = isRest ? REST_TIME : WORK_TIME;
+  isPrep = prepPending && !isRest;
+  prepPending = false;
+  timeLeft = stepTotal = isPrep ? PREP_TIME : isRest ? REST_TIME : WORK_TIME;
   document.getElementById('playerExercise').textContent = ex;
-  document.getElementById('playerPhase').textContent = isRest ? 'REST' : 'WORK';
+  document.getElementById('playerPhase').textContent = isPrep ? 'GET READY' : isRest ? 'REST' : 'WORK';
   document.getElementById('playerStepCount').textContent = `Step ${currentStepIndex+1} of ${currentWorkout.exercises.length}`;
   document.getElementById('exerciseIcon').innerHTML = renderExercisePhoto(ex);
   document.getElementById('playerInstructions').textContent = exerciseInstructions[ex] || 'Keep good form and controlled breathing throughout.';
   const nextEx = currentWorkout.exercises[currentStepIndex+1];
-  speakStep(ex, isRest, nextEx);
+  if(isPrep) speak('Get ready. First up: '+ex+'.'); else speakStep(ex, isRest, nextEx);
+  updateEasierBtn(ex);
   updateRing();
   updateProgress();
   timerInterval = setInterval(tick, 1000);
@@ -1406,12 +1495,11 @@ function tick(){
   timeLeft--;
   updateRing();
   if(timeLeft>0 && timeLeft<=3){ beep(880, 0.12); }
-  if(timeLeft<=0){ beep(440, 0.3); nextStep(); }
+  if(timeLeft<=0){ beep(440, 0.3); if(isPrep) runStep(); else nextStep(); }
 }
 function updateRing(){
   document.getElementById('playerTimer').textContent = timeLeft;
-  const total = isRest ? REST_TIME : WORK_TIME;
-  const offset = 283 * (1 - timeLeft/total);
+  const offset = 283 * (1 - timeLeft/stepTotal);
   document.getElementById('playerRing').style.strokeDashoffset = offset;
 }
 function updateProgress(){
@@ -1422,22 +1510,25 @@ function nextStep(){
   currentStepIndex++;
   if(currentStepIndex >= currentWorkout.exercises.length){ finishWorkout(); } else { runStep(); }
 }
-function skipStep(){ nextStep(); }
+function skipStep(){ if(isPrep) runStep(); else nextStep(); }
 function togglePause(){ isPaused=!isPaused; document.getElementById('pauseBtn').textContent = isPaused?'RESUME':'PAUSE'; }
-function closePlayer(){ clearInterval(timerInterval); if(speechSupported) speechSynthesis.cancel(); document.getElementById('playerModal').classList.add('hidden'); }
+function closePlayer(){ clearInterval(timerInterval); keepAwake(false); closeZoom(); if(speechSupported) speechSynthesis.cancel(); document.getElementById('playerModal').classList.add('hidden'); }
 let lastFinish = null;
 function finishWorkout(){
   clearInterval(timerInterval);
+  keepAwake(false);
   document.getElementById('playerProgress').style.width='100%';
   document.getElementById('playerModal').classList.add('hidden');
   const history = load(LS.history, []);
   history.unshift({name:currentWorkout.name, mins:currentWorkout.mins, cat:currentWorkout.cat, date:new Date().toISOString()});
   save(LS.history, history);
+  const ch = challengeAdvance(currentWorkout.id);
   const stats = computeStats();
   const gain = currentWorkout.mins*10 + stats.streak*5;
   lastFinish = {name:currentWorkout.name, mins:currentWorkout.mins, count:currentWorkout.exercises.filter(e=>e!=='Rest').length, gain, streak:stats.streak};
   addXP(gain);
   checkBadges();
+  if(ch) showToast(ch.finished ? '🏆 Challenge complete: '+ch.name : '✅ Day '+ch.day+' done — Day '+ch.next+' unlocked');
   launchConfetti();
   speak(`Workout complete! Great job finishing ${currentWorkout.name}. You earned ${gain} experience points.`);
   document.getElementById('doneSummary').textContent = `${currentWorkout.name} • ${currentWorkout.mins} mins • ${currentWorkout.exercises.length} exercises`;
@@ -1558,6 +1649,7 @@ function calcCalories(){
 
 /* ================= NUTRITION / MEAL DIARY ================= */
 function renderNutrition(){
+  renderMealPlans();
   document.getElementById('targetCalories').value = load(LS.target, '') || '';
   renderFoodTable('');
   renderDiary();
@@ -1707,6 +1799,332 @@ function clearHistory(){
   }
 }
 
+/* ================= WAKE LOCK ================= */
+async function keepAwake(on){
+  try{
+    if(on){
+      if(navigator.wakeLock && !wakeLock){
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', ()=>{ wakeLock = null; });
+      }
+    } else if(wakeLock){
+      await wakeLock.release();
+      wakeLock = null;
+    }
+  }catch(e){ wakeLock = null; }
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='visible' && !$id('playerModal').classList.contains('hidden')) keepAwake(true);
+});
+
+/* ================= TIMING SETTINGS ================= */
+const WORK_OPTS = [20,30,40,45,60], REST_OPTS = [5,10,15,20,30], PREP_OPTS = [0,3,5,10];
+function applySettings(){
+  const s = load(LS.settings, {}) || {};
+  WORK_TIME = WORK_OPTS.includes(s.work) ? s.work : 30;
+  REST_TIME = REST_OPTS.includes(s.rest) ? s.rest : 10;
+  PREP_TIME = PREP_OPTS.includes(s.prep) ? s.prep : 0;
+}
+function fillSelect(id, opts, value, fmt){
+  $id(id).innerHTML = opts.map(o=>`<option value="${o}" ${o===value?'selected':''}>${fmt(o)}</option>`).join('');
+}
+function renderSettingsForm(){
+  fillSelect('setWork', WORK_OPTS, WORK_TIME, o=>o+'s');
+  fillSelect('setRest', REST_OPTS, REST_TIME, o=>o+'s');
+  fillSelect('setPrep', PREP_OPTS, PREP_TIME, o=>o===0?'Off':o+'s');
+}
+['setWork','setRest','setPrep'].forEach(id=>$id(id).addEventListener('change', ()=>{
+  save(LS.settings, {work:Number($id('setWork').value), rest:Number($id('setRest').value), prep:Number($id('setPrep').value)});
+  applySettings();
+  showToast('⏱️ Timing saved');
+}));
+
+/* ================= SWAP FOR EASIER ================= */
+const easierAlt = {
+  'Regular Pushups':'Knee Pushups','Wide Pushups':'Knee Pushups','Diamond Pushups':'Knee Pushups','Close-Grip Pushups':'Knee Pushups',
+  'Decline Pushups':'Incline Pushups','Clap Pushups':'Regular Pushups','Knee Pushups':'Incline Pushups',
+  'Burpees':'Bodyweight Squats','Jump Squats':'Bodyweight Squats','Broad Jumps':'Bodyweight Squats','Squat to Punch':'Bodyweight Squats',
+  'Sumo Squats':'Bodyweight Squats','Squat Pulses':'Bodyweight Squats','Wall Sit':'Bodyweight Squats','Lunges':'Bodyweight Squats','Step-Ups':'Bodyweight Squats',
+  'V-Ups':'Crunches','Leg Raises':'Crunches','Russian Twists':'Crunches','Bicycle Crunches':'Crunches','Standing Oblique Crunch':'Crunches',
+  'Side Plank':'Plank','Side Plank (Left)':'Plank','Side Plank (Right)':'Plank','Plank':'Crunches','Plank Jacks':'Plank','Mountain Climbers':'Plank','Inchworms':'Plank',
+  'Spider Crawls':'Mountain Climbers','Jumping Jacks':'Arm Circles','High Knees':'Butt Kicks','Butt Kicks':'Arm Circles','Fast Feet':'Arm Circles',
+  'Sprint in Place':'High Knees','Skater Jumps':'Lunges','Box Jumps':'Step-Ups','Bench Dips':'Tricep Kickbacks','Tricep Kickbacks':'Arm Circles',
+  'Superman Pulses':'Superman Hold','Prone Y-Raise':'Superman Hold','Reverse Snow Angels':'Superman Hold',
+  'Single-Leg Glute Bridge':'Glute Bridges','Glute Bridge Pulses':'Glute Bridges','Glute Kickbacks':'Glute Bridges','Hip Raises':'Glute Bridges'
+};
+function updateEasierBtn(ex){
+  const b = $id('easierBtn'), alt = easierAlt[ex];
+  if(alt && !isRest){ b.textContent = '🔁 Too hard? Swap for '+alt; b.classList.remove('hidden'); }
+  else b.classList.add('hidden');
+}
+function swapEasier(){
+  const ex = currentWorkout.exercises[currentStepIndex], alt = easierAlt[ex];
+  if(!alt) return;
+  currentWorkout.exercises[currentStepIndex] = alt;
+  showToast('Swapped to '+alt);
+  prepPending = isPrep;
+  runStep();
+}
+
+/* ================= PHOTO ZOOM ================= */
+function zoomSrc(){ return EXDB + getExerciseId(currentWorkout.exercises[currentStepIndex]) + '/' + zoomIdx + '.jpg'; }
+function showZoomImage(){
+  const img = $id('zoomImg');
+  img.onerror = ()=>{ if(zoomIdx===1){ zoomIdx = 0; showZoomImage(); } };
+  img.src = zoomSrc();
+  img.alt = currentWorkout.exercises[currentStepIndex]+' demonstration';
+  $id('zoomCaption').textContent = (zoomIdx===0 ? 'Start position' : 'End position') + ' · tap the photo to switch';
+}
+function openZoom(){
+  if(!currentWorkout) return;
+  zoomIdx = 0;
+  zoomPaused = !isPaused;
+  if(zoomPaused) togglePause();
+  showZoomImage();
+  $id('zoomModal').classList.remove('hidden');
+}
+function closeZoom(){
+  if($id('zoomModal').classList.contains('hidden')) return;
+  $id('zoomModal').classList.add('hidden');
+  if(zoomPaused){ zoomPaused = false; if(isPaused) togglePause(); }
+}
+function zoomTap(e){
+  if(e.target.id==='zoomImg'){ zoomIdx = zoomIdx===0 ? 1 : 0; showZoomImage(); }
+  else closeZoom();
+}
+
+/* ================= 30-DAY CHALLENGES ================= */
+function buildSchedule(pools){
+  const s = [];
+  for(let d=1; d<=30; d++){
+    if(d%7===0){ s.push(d%14===0 ? 'mobility2' : 'mobility1'); continue; }
+    const pool = pools[d<=10 ? 0 : d<=20 ? 1 : 2];
+    s.push(pool[(d-1)%pool.length]);
+  }
+  return s;
+}
+const challengeDefs = [
+  {id:'abs30', name:'Flat Stomach 30', emoji:'🧱', blurb:'Core-focused. Starts gentle, ends with your hardest ab sessions.',
+    pools:[['abs1','cardio1','abs1','fullbody2'],['abs2','abs3','core3','cardio1','abs2'],['abs2','core3','abs3','cardio2','abs2','fullbody1']]},
+  {id:'full30', name:'Full Body Kickstart 30', emoji:'⚡', blurb:'Push, legs, back, cardio. A complete reset for beginners.',
+    pools:[['fullbody2','legs3','chest1','back1','fullbody2'],['fullbody1','arms1','legs1','cardio1','chest1'],['fullbody1','chest2','legs2','cardio2','arms3','abs2']]},
+  {id:'lower30', name:'Lean Legs & Glutes 30', emoji:'🍑', blurb:'Squats, bridges and step-ups that build a stronger lower body.',
+    pools:[['glutes1','legs3','legs1','glutes1'],['glutes2','legs1','cardio1','glutes2','legs2'],['legs2','glutes2','cardio2','legs1','glutes2']]}
+];
+challengeDefs.forEach(c=>{ c.schedule = buildSchedule(c.pools); });
+function challengeState(){
+  const s = load(LS.challenge, null);
+  return {active: (s && s.active) || null, completed: (s && Array.isArray(s.completed)) ? s.completed : []};
+}
+function challengeDay(active){
+  const done = new Set(active.done);
+  for(let d=1; d<=30; d++) if(!done.has(d)) return d;
+  return 31;
+}
+function challengeToday(){
+  const st = challengeState();
+  if(!st.active) return null;
+  const def = challengeDefs.find(c=>c.id===st.active.id);
+  if(!def) return null;
+  const day = challengeDay(st.active);
+  if(day>30) return null;
+  const workout = workouts.find(w=>w.id===def.schedule[day-1]);
+  return workout ? {def, day, workout, state:st} : null;
+}
+function startChallenge(id){
+  const st = challengeState();
+  if(st.active && st.active.id!==id && !confirm('Switch challenge? Your progress in the current one will be lost.')) return;
+  save(LS.challenge, {active:{id, startedAt:new Date().toISOString(), done:[]}, completed:st.completed});
+  renderChallenges(); renderChallengeDash();
+  showToast('🏆 Challenge started — Day 1 is ready');
+}
+function quitChallenge(){
+  if(!confirm('Quit this challenge? Your progress will be lost.')) return;
+  const st = challengeState();
+  save(LS.challenge, {active:null, completed:st.completed});
+  renderChallenges(); renderChallengeDash();
+}
+function challengeAdvance(workoutId){
+  const t = challengeToday();
+  if(!t || t.workout.id!==workoutId) return null;
+  const st = t.state;
+  st.active.done.push(t.day);
+  if(st.active.done.length>=30){
+    st.completed = [...new Set(st.completed.concat(st.active.id))];
+    const name = t.def.name;
+    st.active = null;
+    save(LS.challenge, st);
+    return {finished:true, name};
+  }
+  save(LS.challenge, st);
+  return {day:t.day, next:t.day+1};
+}
+function renderChallenges(){
+  const st = challengeState();
+  $id('challengeSection').innerHTML = `<h4 class="font-black text-lg mb-1">30-day challenges</h4>
+    <p class="text-xs text-zinc-400 mb-3">Self-paced: finish each day's workout to unlock the next. Every 7th day is active recovery.</p>` +
+    challengeDefs.map(def=>{
+      const active = st.active && st.active.id===def.id;
+      const completed = st.completed.includes(def.id);
+      let body;
+      if(active){
+        const day = challengeDay(st.active);
+        const w = workouts.find(x=>x.id===def.schedule[day-1]);
+        const pct = Math.round(st.active.done.length/30*100);
+        const grid = def.schedule.map((_,i)=>{ const d=i+1, done=st.active.done.includes(d), cur=d===day;
+          return `<span class="ch-day ${done?'done':''} ${cur?'cur':''}">${done?'✓':d}</span>`; }).join('');
+        body = `<div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Day ${day} of 30</span><span>${pct}%</span></div>
+          <div class="h-2 rounded-full bg-zinc-800 overflow-hidden mb-3"><div class="h-full brand-btn" style="width:${pct}%"></div></div>
+          <div class="grid grid-cols-10 gap-1 mb-3">${grid}</div>
+          <div class="flex items-center gap-3">
+            <div class="flex-1 min-w-0"><div class="text-xs text-zinc-400">Today</div><div class="font-black leading-tight">${esc(w.name)}</div><div class="text-xs text-zinc-400">${w.mins} mins</div></div>
+            <button onclick="startWorkout('${w.id}')" class="brand-btn text-white px-5 py-2.5 rounded-full font-bold text-sm">START</button>
+          </div>
+          <button onclick="quitChallenge()" class="text-xs text-zinc-500 underline mt-3">Quit challenge</button>`;
+      } else {
+        body = `<p class="text-sm text-zinc-400 mb-3">${def.blurb}</p>
+          <button onclick="startChallenge('${def.id}')" class="${completed?'glass-pill':'brand-btn text-white'} px-5 py-2.5 rounded-full font-bold text-sm">${completed?'DO IT AGAIN':'START CHALLENGE'}</button>`;
+      }
+      return `<div class="glass-card rounded-2xl p-5 mb-3">
+        <div class="flex items-center gap-2 mb-2"><span class="em">${def.emoji}</span><span class="font-black">${def.name}</span>${completed?'<span class="text-[10px] font-bold px-2 py-0.5 rounded-full glass-pill ml-auto">✓ COMPLETED</span>':''}</div>${body}</div>`;
+    }).join('');
+}
+function renderChallengeDash(){
+  const t = challengeToday();
+  const box = $id('challengeDash');
+  if(!t){
+    box.innerHTML = `<p class="text-sm text-zinc-400 mb-3">Pick a 30-day program and we'll line up a workout every day.</p>
+      <button onclick="showView('plan')" class="brand-btn text-white px-5 py-2 rounded-full font-bold text-sm">SEE CHALLENGES</button>`;
+    return;
+  }
+  const pct = Math.round(t.state.active.done.length/30*100);
+  box.innerHTML = `<div class="flex justify-between text-xs text-zinc-400 mb-1"><span class="font-bold">${t.def.name}</span><span>Day ${t.day} of 30</span></div>
+    <div class="h-2 rounded-full bg-zinc-800 overflow-hidden mb-3"><div class="h-full brand-btn" style="width:${pct}%"></div></div>
+    <div class="flex items-center gap-3">
+      <div class="flex-1 min-w-0"><div class="text-xs text-zinc-400">Today</div><div class="font-black leading-tight">${esc(t.workout.name)}</div></div>
+      <button onclick="startWorkout('${t.workout.id}')" class="brand-btn text-white px-5 py-2.5 rounded-full font-bold text-sm">START</button>
+    </div>`;
+}
+
+/* ================= WATER TRACKER ================= */
+const WATER_GOAL = 8;
+function addWater(n){
+  const w = load(LS.water, {}) || {}, k = localDay();
+  const before = w[k]||0;
+  w[k] = Math.min(30, Math.max(0, before+n));
+  Object.keys(w).sort().slice(0,-60).forEach(d=>delete w[d]);
+  save(LS.water, w);
+  renderWater();
+  if(before<WATER_GOAL && w[k]>=WATER_GOAL) showToast('💧 Water goal reached!');
+  checkBadges();
+}
+function renderWater(){
+  const n = (load(LS.water, {})||{})[localDay()]||0;
+  const pct = Math.min(100, Math.round(n/WATER_GOAL*100));
+  $id('waterCard').innerHTML = `<div class="flex items-center gap-3">
+      <button onclick="addWater(-1)" class="glass-pill w-10 h-10 rounded-full font-black text-lg" aria-label="Remove a glass">−</button>
+      <div class="flex-1"><div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Glasses today</span><span><b class="text-white">${n}</b> / ${WATER_GOAL}</span></div>
+        <div class="h-2 rounded-full bg-zinc-800 overflow-hidden"><div id="waterBar" class="h-full brand-btn" style="width:${pct}%"></div></div></div>
+      <button onclick="addWater(1)" class="brand-btn text-white w-10 h-10 rounded-full font-black text-lg" aria-label="Add a glass">+</button>
+    </div>`;
+}
+
+/* ================= NAIJA MEAL PLANS ================= */
+const mealPlans = [
+  {name:'Lean day', blurb:'Light, high-protein, low oil.', slots:{Breakfast:['Moin Moin','Zobo Drink'], Lunch:['Ewa Agoyin (Beans)'], Snack:['Groundnut'], Dinner:['Catfish Pepper Soup','Boli (Roasted Plantain)','Okro Soup']}},
+  {name:'Balanced day', blurb:'A normal Naija day, portioned well.', slots:{Breakfast:['Akara','Zobo Drink'], Lunch:['Jollof Rice','Peppered Chicken'], Snack:['Groundnut'], Dinner:['Amala + Ewedu + Gbegiri']}},
+  {name:'Muscle gain', blurb:'Extra protein and carbs for building.', slots:{Breakfast:['Moin Moin','Akara'], Lunch:['Rice & Stew','Peppered Chicken'], Snack:['Suya (Beef)','Groundnut'], Dinner:['Pounded Yam + Egusi','Catfish Pepper Soup']}},
+  {name:'Budget day', blurb:'Cheap, filling, everyday foods.', slots:{Breakfast:['Asaro (Yam Porridge)'], Lunch:['Ewa Agoyin (Beans)'], Snack:['Boli (Roasted Plantain)','Groundnut'], Dinner:['Rice & Stew']}}
+];
+let mealPlanIdx = 0;
+function planFoods(p){ return Object.values(p.slots).flat().map(n=>naijaFoods.find(f=>f.food===n)).filter(Boolean); }
+function renderMealPlans(){
+  $id('mealPlanChips').innerHTML = mealPlans.map((p,i)=>`<button class="chip flex-shrink-0 border border-zinc-700 rounded-full px-4 py-2 text-xs font-bold ${i===mealPlanIdx?'active':''}" data-i="${i}">${p.name}</button>`).join('');
+  const p = mealPlans[mealPlanIdx], foods = planFoods(p);
+  const tot = foods.reduce((s,f)=>({cal:s.cal+f.cal,p:s.p+f.p,c:s.c+f.c,f:s.f+f.f}), {cal:0,p:0,c:0,f:0});
+  $id('mealPlanBody').innerHTML = `<p class="text-xs text-zinc-400 mb-3">${p.blurb}</p>` +
+    Object.entries(p.slots).map(([slot,items])=>`<div class="mb-2"><div class="text-[10px] font-bold text-pink-400 tracking-widest">${slot.toUpperCase()}</div><div class="text-sm">${items.map(esc).join(' · ')}</div></div>`).join('') +
+    `<div class="flex justify-between items-end mt-3 pt-3 border-t border-zinc-800"><div><span class="text-2xl font-black">${tot.cal}</span> <span class="text-xs text-zinc-400">kcal</span></div><div class="text-xs text-zinc-400">P ${tot.p}g · C ${tot.c}g · F ${tot.f}g</div></div>
+    <div class="grid grid-cols-2 gap-3 mt-3"><button onclick="logMealPlan()" class="brand-btn text-white py-2.5 rounded-full font-black text-sm">LOG WHOLE DAY</button><button onclick="useMealPlanTarget()" class="glass-pill py-2.5 rounded-full font-black text-sm">USE AS TARGET</button></div>`;
+}
+$id('mealPlanChips').addEventListener('click', e=>{
+  const b = e.target.closest('[data-i]');
+  if(b){ mealPlanIdx = Number(b.dataset.i); renderMealPlans(); }
+});
+function logMealPlan(){
+  const foods = planFoods(mealPlans[mealPlanIdx]);
+  const meals = load(LS.meals, {}), t = todayStr();
+  if(!meals[t]) meals[t] = [];
+  foods.forEach(f=>meals[t].push({name:f.food, cal:f.cal, p:f.p, c:f.c, f:f.f, time:new Date().toISOString()}));
+  save(LS.meals, meals);
+  checkBadges(); renderDiary();
+  showToast('🍽️ '+mealPlans[mealPlanIdx].name+' added to today');
+}
+function useMealPlanTarget(){
+  const total = planFoods(mealPlans[mealPlanIdx]).reduce((s,f)=>s+f.cal, 0);
+  save(LS.target, total);
+  $id('targetCalories').value = total;
+  renderDiary();
+  showToast('🎯 Target set to '+total+' kcal');
+}
+
+/* ================= REMINDERS ================= */
+function reminderCfg(){ const r = load(LS.reminder, null) || {}; return {on:r.on===true, time:/^\d\d:\d\d$/.test(r.time)?r.time:'18:00', last:r.last||''}; }
+function renderReminderForm(){
+  const r = reminderCfg();
+  $id('remOn').checked = r.on;
+  $id('remTime').value = r.time;
+}
+async function saveReminder(){
+  const r = reminderCfg();
+  r.on = $id('remOn').checked;
+  r.time = $id('remTime').value || '18:00';
+  r.last = '';
+  if(r.on && 'Notification' in window && Notification.permission==='default'){
+    try{ await Notification.requestPermission(); }catch(e){}
+  }
+  save(LS.reminder, r);
+  showToast(r.on ? '🔔 Reminder set for '+r.time : '🔕 Reminder off');
+  checkReminder();
+}
+$id('remOn').addEventListener('change', saveReminder);
+$id('remTime').addEventListener('change', saveReminder);
+async function checkReminder(){
+  const r = reminderCfg();
+  if(!r.on) return;
+  const [hh,mm] = r.time.split(':').map(Number), now = new Date(), due = new Date();
+  due.setHours(hh,mm,0,0);
+  if(now<due || r.last===localDay()) return;
+  r.last = localDay();
+  save(LS.reminder, r);
+  const trainedToday = load(LS.history, []).some(h=>localDay(new Date(h.date))===localDay());
+  if(trainedToday) return;
+  const w = workouts.find(x=>x.id===heroWorkoutId);
+  const body = w ? 'Time to train: '+w.name+' is ready 💪' : 'Time to train 💪';
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+      if(reg) await reg.showNotification('Naija Fit', {body, icon:'icon-192.png', tag:'daily-workout'});
+      else new Notification('Naija Fit', {body, icon:'icon-192.png'});
+      return;
+    }
+  }catch(e){}
+  showToast('⏰ '+body);
+}
+setInterval(checkReminder, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') checkReminder(); });
+function downloadReminderIcs(){
+  const time = $id('remTime').value || '18:00', [hh,mm] = time.split(':').map(Number);
+  const start = new Date(); start.setHours(hh,mm,0,0);
+  if(start<new Date()) start.setDate(start.getDate()+1);
+  const p2 = n=>String(n).padStart(2,'0');
+  const stamp = new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
+  const dt = start.getFullYear()+p2(start.getMonth()+1)+p2(start.getDate())+'T'+p2(hh)+p2(mm)+'00';
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naija Fit//Reminder//EN','BEGIN:VEVENT','UID:daily@naijafit.github.io','DTSTAMP:'+stamp,'DTSTART:'+dt,'DURATION:PT30M','RRULE:FREQ=DAILY','SUMMARY:Naija Fit workout','DESCRIPTION:Open https://naijafit.github.io and do today\'s workout.','URL:https://naijafit.github.io','BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY','DESCRIPTION:Time to train','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  downloadBlob(new Blob([ics],{type:'text/calendar'}), 'naijafit-reminder.ics');
+  showToast('📅 Open the file to add it to your calendar');
+}
+
 /* ================= BACKUP & RESTORE ================= */
 const BACKUP_MAX_BYTES = 5*1024*1024;
 function downloadBlob(blob, filename){
@@ -1779,6 +2197,24 @@ function sanitizeBackup(raw){
   if(num(d.target) && d.target>=0 && d.target<=20000) out.target = Math.round(d.target);
   if(typeof d.voice==='boolean') out.voice = d.voice;
   if(['dark','clean','flip7'].includes(d.theme)) out.theme = d.theme;
+  if(d.settings && typeof d.settings==='object'){
+    const pick = (v,list,def)=>list.includes(v)?v:def;
+    out.settings = {work:pick(d.settings.work,WORK_OPTS,30), rest:pick(d.settings.rest,REST_OPTS,10), prep:pick(d.settings.prep,PREP_OPTS,0)};
+  }
+  if(d.challenge && typeof d.challenge==='object'){
+    const ids = challengeDefs.map(c=>c.id), a = d.challenge.active;
+    out.challenge = {
+      active: (a && ids.includes(a.id) && Array.isArray(a.done)) ? {id:a.id, startedAt: validDate(a.startedAt)?new Date(a.startedAt).toISOString():new Date().toISOString(), done:[...new Set(a.done.filter(n=>Number.isInteger(n)&&n>=1&&n<=30))].sort((x,y)=>x-y)} : null,
+      completed: Array.isArray(d.challenge.completed) ? [...new Set(d.challenge.completed.filter(x=>ids.includes(x)))] : []
+    };
+  }
+  if(d.water && typeof d.water==='object' && !Array.isArray(d.water)){
+    out.water = {};
+    Object.keys(d.water).slice(0,200).forEach(k=>{ if(dayKey.test(k) && Number.isInteger(d.water[k]) && d.water[k]>=0 && d.water[k]<=30) out.water[k]=d.water[k]; });
+  }
+  if(d.reminder && typeof d.reminder==='object'){
+    out.reminder = {on:d.reminder.on===true, time:/^([01]\d|2[0-3]):[0-5]\d$/.test(d.reminder.time)?d.reminder.time:'18:00', last:(typeof d.reminder.last==='string' && dayKey.test(d.reminder.last))?d.reminder.last:''};
+  }
   return out;
 }
 document.getElementById('restoreFile').addEventListener('change', async e=>{
@@ -1979,6 +2415,11 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
 
 /* ================= INIT ================= */
 showView('dashboard');
+applySettings();
+renderSettingsForm();
+renderReminderForm();
+renderMealPlans();
+checkReminder();
 if(sessionStorage.getItem('naijaFitRestored')){ sessionStorage.removeItem('naijaFitRestored'); showToast('✅ Backup restored'); }
 </script>
 </body>

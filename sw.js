@@ -1,4 +1,4 @@
-const CACHE = 'naijafit-v4';
+const CACHE = 'naijafit-v5';
 const SHELL = [
   './index.html',
   './manifest.webmanifest',
