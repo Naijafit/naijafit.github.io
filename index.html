@@ -571,6 +571,11 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
 <!-- ============ PROGRESS ============ -->
 <section id="view-progress" class="view p-4 md:p-6 space-y-8">
   <h3 class="text-2xl md:text-3xl font-black">Your progress</h3>
+  <button onclick="shareProgress()" class="glass-card w-full rounded-2xl p-4 flex items-center gap-3 text-left">
+    <span class="glass-icon flex-shrink-0" style="width:44px;height:44px;border-radius:15px;"><span class="text-xl em">📤</span></span>
+    <span class="flex-1"><span class="block font-black">Share your progress</span><span class="block text-xs text-zinc-400">Make a picture card for WhatsApp or Instagram</span></span>
+    <span class="text-2xl text-zinc-400">›</span>
+  </button>
 
   <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
     <h4 class="font-bold mb-3"><span class="em">⚖️ </span>Weight Log</h4>
@@ -644,6 +649,15 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
         <span class="block text-sm font-black">Flip7</span><span class="block text-[11px] opacity-70">Teal &amp; gold</span>
       </button>
     </div>
+  </div>
+  <div class="glass-card rounded-2xl p-5">
+    <div class="font-black mb-1">💾 Your data</div>
+    <p class="text-xs text-zinc-400 mb-3">Everything is saved on this device only. Download a backup before you clear your browser or switch phones, then restore it on the new one.</p>
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="downloadBackup()" class="brand-btn text-white py-2.5 rounded-full font-black text-sm">DOWNLOAD BACKUP</button>
+      <button onclick="document.getElementById('restoreFile').click()" class="glass-pill py-2.5 rounded-full font-black text-sm">RESTORE</button>
+    </div>
+    <input id="restoreFile" type="file" accept="application/json,.json" class="hidden">
   </div>
   <div id="installCard" class="glass-card rounded-2xl p-5">
     <div class="flex items-center gap-3">
@@ -735,7 +749,10 @@ else if(t==='flip7'){r.classList.add('flip7');m.content='#2BA8A2';}else{m.conten
   <h2 class="ribbon text-3xl font-black mb-3">WORKOUT COMPLETE!</h2>
   <p class="text-zinc-400 mb-2" id="doneSummary"></p>
   <p class="brand-text font-black text-lg mb-8" id="doneXP"></p>
-  <button onclick="closeDone()" class="brand-btn text-white px-8 py-3 rounded-full font-bold">DONE</button>
+  <div class="flex gap-3">
+    <button onclick="shareResult()" class="glass-pill px-6 py-3 rounded-full font-bold">📤 SHARE</button>
+    <button onclick="closeDone()" class="brand-btn text-white px-8 py-3 rounded-full font-bold">DONE</button>
+  </div>
 </div>
 
 <script>
@@ -1349,7 +1366,7 @@ function photoFailed(img){
 }
 function renderExercisePhoto(name){
   const id = getExerciseId(name);
-  return `<div class="photo-placeholder absolute inset-0 bg-zinc-800 animate-pulse"></div><img src="${photoUrl(id)}" alt="${name} demonstration" loading="eager" class="relative w-full h-full object-cover opacity-0 transition-opacity duration-300" onload="photoLoaded(this)" onerror="photoFailed(this)">`;
+  return `<div class="photo-placeholder absolute inset-0 bg-zinc-800 animate-pulse"></div><img src="${photoUrl(id)}" alt="${esc(name)} demonstration" loading="eager" class="relative w-full h-full object-cover opacity-0 transition-opacity duration-300" onload="photoLoaded(this)" onerror="photoFailed(this)">`;
 }
 
 /* ================= WORKOUT PLAYER ================= */
@@ -1408,6 +1425,7 @@ function nextStep(){
 function skipStep(){ nextStep(); }
 function togglePause(){ isPaused=!isPaused; document.getElementById('pauseBtn').textContent = isPaused?'RESUME':'PAUSE'; }
 function closePlayer(){ clearInterval(timerInterval); if(speechSupported) speechSynthesis.cancel(); document.getElementById('playerModal').classList.add('hidden'); }
+let lastFinish = null;
 function finishWorkout(){
   clearInterval(timerInterval);
   document.getElementById('playerProgress').style.width='100%';
@@ -1417,6 +1435,7 @@ function finishWorkout(){
   save(LS.history, history);
   const stats = computeStats();
   const gain = currentWorkout.mins*10 + stats.streak*5;
+  lastFinish = {name:currentWorkout.name, mins:currentWorkout.mins, count:currentWorkout.exercises.filter(e=>e!=='Rest').length, gain, streak:stats.streak};
   addXP(gain);
   checkBadges();
   launchConfetti();
@@ -1688,6 +1707,212 @@ function clearHistory(){
   }
 }
 
+/* ================= BACKUP & RESTORE ================= */
+const BACKUP_MAX_BYTES = 5*1024*1024;
+function downloadBlob(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+function downloadBackup(){
+  const data = {};
+  Object.entries(LS).forEach(([name,key])=>{ const v = load(key, undefined); if(v!==undefined) data[name]=v; });
+  const payload = {app:'naijafit', version:1, exportedAt:new Date().toISOString(), data};
+  downloadBlob(new Blob([JSON.stringify(payload,null,1)],{type:'application/json'}), 'naijafit-backup-'+todayStr()+'.json');
+  showToast('💾 Backup downloaded');
+}
+function sanitizeBackup(raw){
+  if(!raw || raw.app!=='naijafit' || !raw.data || typeof raw.data!=='object') throw new Error('This is not a Naija Fit backup file.');
+  const d = raw.data, out = {};
+  const num = n => typeof n==='number' && isFinite(n);
+  const validDate = s => typeof s==='string' && !isNaN(Date.parse(s));
+  const dayKey = /^\d{4}-\d{2}-\d{2}$/;
+  const stepOk = new Set(exerciseCatalog.concat('Rest'));
+
+  if(d.profile && typeof d.profile==='object'){
+    out.profile = {
+      name: String(d.profile.name||'Champ').slice(0,30),
+      goal: ['lose','muscle','fit','endurance'].includes(d.profile.goal) ? d.profile.goal : 'fit',
+      avatar: avatars.includes(d.profile.avatar) ? d.profile.avatar : avatars[0]
+    };
+  }
+  if(Array.isArray(d.custom)){
+    const seen = new Set();
+    out.custom = [];
+    d.custom.slice(0,100).forEach(w=>{
+      if(!w || typeof w.id!=='string' || !/^custom_\d{1,15}$/.test(w.id) || seen.has(w.id)) return;
+      const name = typeof w.name==='string' ? w.name.trim().slice(0,40) : '';
+      const steps = Array.isArray(w.exercises) ? w.exercises.filter(e=>typeof e==='string' && stepOk.has(e)).slice(0,MAX_BUILDER_STEPS) : [];
+      if(!name || !steps.some(e=>e!=='Rest')) return;
+      seen.add(w.id);
+      out.custom.push({id:w.id, name, cat:'custom', diff:'Custom', mins:builderMinutes(steps), equip:'Your mix', exercises:steps});
+    });
+  }
+  if(Array.isArray(d.history)){
+    out.history = d.history.slice(0,5000)
+      .filter(x=>x && typeof x.name==='string' && num(x.mins) && validDate(x.date) && Object.hasOwn(categories, x.cat))
+      .map(x=>({name:x.name.slice(0,60), mins:Math.min(300,Math.max(1,Math.round(x.mins))), cat:x.cat, date:new Date(x.date).toISOString()}));
+  }
+  if(num(d.xp) && d.xp>=0) out.xp = Math.min(10000000, Math.floor(d.xp));
+  if(Array.isArray(d.badges)) out.badges = d.badges.filter(id=>badgeDefs.some(b=>b.id===id));
+  if(Array.isArray(d.weight)){
+    out.weight = d.weight.slice(0,3000).filter(x=>x && num(x.weight) && x.weight>0 && x.weight<500 && typeof x.date==='string' && dayKey.test(x.date)).map(x=>({date:x.date, weight:x.weight}));
+  }
+  if(d.meals && typeof d.meals==='object' && !Array.isArray(d.meals)){
+    out.meals = {};
+    Object.keys(d.meals).slice(0,800).forEach(day=>{
+      if(!dayKey.test(day) || !Array.isArray(d.meals[day])) return;
+      const list = d.meals[day].slice(0,100).map(m=>{
+        const f = m && typeof m.name==='string' ? naijaFoods.find(x=>x.food===m.name) : null;
+        return f ? {name:f.food, cal:f.cal, p:f.p, c:f.c, f:f.f, time: validDate(m.time) ? new Date(m.time).toISOString() : day+'T12:00:00.000Z'} : null;
+      }).filter(Boolean);
+      if(list.length) out.meals[day] = list;
+    });
+  }
+  if(d.plan && typeof d.plan==='object' && !Array.isArray(d.plan)){
+    const ids = new Set(baseWorkouts.map(w=>w.id).concat((out.custom||[]).map(w=>w.id)));
+    out.plan = {};
+    days.forEach(day=>{ const v = d.plan[day]; if(v==='rest' || (typeof v==='string' && ids.has(v))) out.plan[day]=v; });
+  }
+  if(num(d.target) && d.target>=0 && d.target<=20000) out.target = Math.round(d.target);
+  if(typeof d.voice==='boolean') out.voice = d.voice;
+  if(['dark','clean','flip7'].includes(d.theme)) out.theme = d.theme;
+  return out;
+}
+document.getElementById('restoreFile').addEventListener('change', async e=>{
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file) return;
+  try{
+    if(file.size > BACKUP_MAX_BYTES) throw new Error('That file is too large to be a Naija Fit backup.');
+    const clean = sanitizeBackup(JSON.parse(await file.text()));
+    const n = (clean.history||[]).length, c = (clean.custom||[]).length;
+    const lvl = levelInfo(clean.xp||0).lvl;
+    if(!confirm(`Restore this backup?\n\n${n} workouts, ${c} custom workouts, level ${lvl}.\n\nThis replaces the data currently on this device.`)) return;
+    Object.values(LS).forEach(k=>localStorage.removeItem(k));
+    Object.entries(out2keys(clean)).forEach(([key,val])=>save(key,val));
+    sessionStorage.setItem('naijaFitRestored','1');
+    location.reload();
+  }catch(err){
+    showToast('⚠️ '+(err instanceof SyntaxError ? 'That file is not valid JSON.' : err.message));
+  }
+});
+function out2keys(clean){
+  const m = {};
+  Object.entries(clean).forEach(([name,val])=>{ if(LS[name]) m[LS[name]] = val; });
+  return m;
+}
+
+/* ================= SHARE CARD ================= */
+function cardRoundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r); ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r); ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+}
+function cardWrap(ctx, text, maxWidth, maxLines){
+  const words = text.split(/\s+/), lines = [];
+  let line = '';
+  words.forEach(w=>{
+    const test = line ? line+' '+w : w;
+    if(ctx.measureText(test).width > maxWidth && line){ lines.push(line); line = w; } else line = test;
+  });
+  if(line) lines.push(line);
+  if(lines.length > maxLines){ lines.length = maxLines; lines[maxLines-1] = lines[maxLines-1].replace(/\s*\S*$/, '…'); }
+  return lines;
+}
+async function buildShareCanvas({eyebrow, title, stats}){
+  try{ await Promise.all([document.fonts.load('800 90px "Bricolage Grotesque"'), document.fonts.load('500 30px "IBM Plex Mono"')]); }catch(e){}
+  const W = 1080, H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const display = '"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif';
+  const mono = '"IBM Plex Mono",ui-monospace,Menlo,monospace';
+
+  const bg = ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#060a17'); bg.addColorStop(1,'#0d2350');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+  let g = ctx.createRadialGradient(120,140,0,120,140,700);
+  g.addColorStop(0,'rgba(34,211,238,.38)'); g.addColorStop(1,'rgba(34,211,238,0)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  g = ctx.createRadialGradient(1000,620,0,1000,620,620);
+  g.addColorStop(0,'rgba(124,108,255,.38)'); g.addColorStop(1,'rgba(124,108,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 40px '+display;
+  ctx.fillText('NAIJA FIT FREE', 80, 130);
+  const aur = ctx.createLinearGradient(80,0,1000,0);
+  aur.addColorStop(0,'#22d3ee'); aur.addColorStop(.5,'#60a5fa'); aur.addColorStop(1,'#a78bfa');
+  ctx.fillStyle = aur; ctx.fillRect(80,158,200,8);
+
+  cardRoundRect(ctx, 70, 270, 940, 820, 56);
+  ctx.fillStyle = 'rgba(255,255,255,.07)'; ctx.fill();
+  ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.2)'; ctx.stroke();
+
+  ctx.fillStyle = '#67e8f9';
+  ctx.font = '500 32px '+mono;
+  ctx.fillText(eyebrow.toUpperCase(), 130, 370);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '800 100px '+display;
+  const lines = cardWrap(ctx, title, 820, 3);
+  lines.forEach((l,i)=>ctx.fillText(l, 130, 500 + i*112));
+
+  const top = 500 + lines.length*112 + 70;
+  ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(130, top, 820, 2);
+  const colW = 820/stats.length;
+  stats.forEach((s,i)=>{
+    const x = 130 + i*colW;
+    ctx.fillStyle = aur; ctx.font = '800 92px '+display;
+    ctx.fillText(s.value, x, top+130);
+    ctx.fillStyle = 'rgba(255,255,255,.65)'; ctx.font = '500 28px '+mono;
+    ctx.fillText(s.label.toUpperCase(), x, top+180);
+  });
+
+  ctx.fillStyle = '#ffffff'; ctx.font = '800 54px '+display;
+  ctx.fillText('No gym. No wahala.', 80, 1190);
+  ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '500 32px '+mono;
+  ctx.fillText('Train free at naijafit.github.io', 80, 1250);
+  return canvas;
+}
+async function shareCard(opts, caption){
+  try{
+    const canvas = await buildShareCanvas(opts);
+    const blob = await new Promise(r=>canvas.toBlob(r,'image/png'));
+    const file = new File([blob], 'naija-fit.png', {type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], text:caption});
+      return;
+    }
+    downloadBlob(blob, 'naija-fit-card.png');
+    try{ await navigator.clipboard.writeText(caption); showToast('📤 Card saved — caption copied'); }
+    catch(e){ showToast('📤 Card saved'); }
+  }catch(err){
+    if(err && err.name==='AbortError') return;
+    showToast('⚠️ Could not make the card');
+  }
+}
+function shareResult(){
+  const f = lastFinish;
+  if(!f) return;
+  const lvl = levelInfo(load(LS.xp,0)).lvl;
+  shareCard({eyebrow:'Workout complete', title:f.name, stats:[{value:f.mins+'m',label:'Minutes'},{value:String(f.count),label:'Exercises'},{value:'+'+f.gain,label:'XP earned'}]},
+    `Just finished ${f.name} 🔥 ${f.mins} mins, +${f.gain} XP, level ${lvl}. Train free: https://naijafit.github.io`);
+}
+function shareProgress(){
+  const s = computeStats();
+  const lvl = levelInfo(load(LS.xp,0)).lvl;
+  const p = load(LS.profile, null);
+  shareCard({eyebrow:'My progress', title: p ? p.name+'’s fitness journey' : 'My fitness journey', stats:[{value:String(s.count),label:'Workouts'},{value:String(s.minutes),label:'Minutes'},{value:String(s.streak),label:'Day streak'}]},
+    `Level ${lvl} on Naija Fit 💪 ${s.count} workouts, ${s.minutes} minutes, ${s.streak}-day streak. Train free: https://naijafit.github.io`);
+}
+
 /* ================= THEMES ================= */
 function currentTheme(){
   const c = document.documentElement.classList;
@@ -1754,6 +1979,7 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
 
 /* ================= INIT ================= */
 showView('dashboard');
+if(sessionStorage.getItem('naijaFitRestored')){ sessionStorage.removeItem('naijaFitRestored'); showToast('✅ Backup restored'); }
 </script>
 </body>
 </html>
